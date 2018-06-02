@@ -52,16 +52,24 @@ var Location = function()
         //send heroes on new location info, that hero just moved to this location
         self.heroesOnLocation[hero.getId()] = 1;
         var HeroesInstance = module.parent.parent.exports.Heroes;
+        var heroesOnLocation = [];
         for (var heroId in self.heroesOnLocation) {
+            heroId = parseInt(heroId);
             if (hero.getId() == heroId) {
                 continue;
             }
+            heroesOnLocation.push(heroId);
             HeroesInstance
                 .getHero(heroId)
                 .responseAddKey('location', {
                     addhero: hero.id
                 })
                 .sendResponse();
+        }
+        if (heroesOnLocation.length) {
+            hero.responseAddKey('location', {
+                heroes: heroesOnLocation
+            });
         }
     };
     self.removeHeroFromLocation = function(hero)

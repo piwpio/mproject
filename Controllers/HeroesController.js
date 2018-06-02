@@ -39,7 +39,7 @@ var Heroes = function()
         //disconnect
         socket.on('disconnect', function() {
             self.removeHero(socket.getHeroId());
-            hero.cleanHeroReferences();
+            hero.heroOnDisconnect();
             console.log("HERO " + socket.getHeroId() + " DISCONNECTED")
         });
     };

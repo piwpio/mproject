@@ -9,7 +9,7 @@ var Hero = function ()
     //specific hero game variables
     self.location = null;
 
-    self.init = function(socket)
+    self.heroOnConnect = function(socket)
     {
         //TODO
         self.id = Math.round(Math.random() * 10);
@@ -17,17 +17,11 @@ var Hero = function ()
 
         //TODO
         self.location = 1;
-        var Locations = module.parent.parent.exports.Locations;
-        var location = Locations.getLocation(self.location);
-        location.addHeroToLocation(self);
-
-        //init routing for socket
-        // HeroRoute.init(self.socket, self);
 
         return self;
     };
 
-    self.cleanHeroReferences = function()
+    self.heroOnDisconnect = function()
     {
         var Locations = module.parent.parent.exports.Locations;
         var location = Locations.getLocation(self.location);
@@ -92,7 +86,7 @@ var Hero = function ()
 
 var init = function(socket)
 {
-    return (new Hero).init(socket);
+    return (new Hero).heroOnConnect(socket);
 };
 
 module.exports = {

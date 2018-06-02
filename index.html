@@ -10,6 +10,7 @@
         socket.on('connected', function() {
             $('#loading').hide();
             $('#loaded').show();
+            socket.emit('init_hero')
         });
         socket.on('response', function(r) {
             console.log(r);
