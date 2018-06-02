@@ -39,6 +39,7 @@ var Heroes = function()
         //disconnect
         socket.on('disconnect', function() {
             self.removeHero(socket.getHeroId());
+            hero.cleanHeroReferences();
             console.log("HERO " + socket.getHeroId() + " DISCONNECTED")
         });
     };
@@ -56,6 +57,11 @@ var Heroes = function()
     self.getHero = function(id)
     {
         return HEROES[id];
+    };
+
+    self.getHeroes = function()
+    {
+        return HEROES;
     };
 
     //region debug methods

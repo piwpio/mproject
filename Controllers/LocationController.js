@@ -1,4 +1,12 @@
-var Heroes = require("./HeroesController");
+var init = function(locationData)
+{
+    return (new Location).init(
+        locationData.id,
+        locationData.t,
+        locationData.m,
+        locationData.e
+    );
+};
 
 var Location = function()
 {
@@ -43,8 +51,11 @@ var Location = function()
     {
         //send heroes on new location info, that hero just moved to this location
         self.heroesOnLocation[hero.getId()] = 1;
-        var HeroesInstance = Heroes.getInstance();
+        var HeroesInstance = module.parent.parent.exports.Heroes;
         for (var heroId in self.heroesOnLocation) {
+            if (hero.getId() == heroId) {
+                continue;
+            }
             HeroesInstance
                 .getHero(heroId)
                 .responseAddKey('location', {
@@ -57,8 +68,11 @@ var Location = function()
     {
         //send heroes on current location info, that hero just moved from this location
         delete self.heroesOnLocation[hero.getId()];
-        var HeroesInstance = Heroes.getInstance();
+        var HeroesInstance = module.parent.parent.exports.Heroes;
         for (var heroId in self.heroesOnLocation) {
+            if (hero.getId() == heroId) {
+                continue;
+            }
             HeroesInstance
                 .getHero(heroId)
                 .responseAddKey('location', {
@@ -72,16 +86,6 @@ var Location = function()
     {
         return self.heroesOnLocation;
     }
-};
-
-var init = function(locationData)
-{
-    return (new Location).init(
-        locationData.id,
-        locationData.t,
-        locationData.m,
-        locationData.e
-    );
 };
 
 module.exports = {

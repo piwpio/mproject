@@ -1,6 +1,7 @@
 var Heroes = require("./Controllers/HeroesController");
 var Locations = require("./Controllers/LocationsController");
 var Debug = require("./Controllers/DebugController");
+var HeroRoute = require("./Controllers/HeroRouteController");
 
 var express = require("express");
 var app = express();
@@ -23,9 +24,16 @@ Heroes.init();
 Debug.init();
 Locations.init();
 
+module.exports = {
+    Heroes: Heroes.getInstance(),
+    Locations: Locations.getInstance()
+};
+
 var io = require('socket.io')(server,{});
 io.sockets.on('connection', function(socket) {
-    Heroes.getInstance().initHeroConnect(socket);
+    var HeroesInstance = Heroes.getInstance();
+    HeroesInstance.initHeroConnect(socket);
+    HeroRoute.init(HeroesInstance.getHero(socket.getHeroId()));
     Debug.getInstance().addHeroDebug(socket);
     console.log("HERO " + socket.getHeroId() + " CONNECTED");
 });

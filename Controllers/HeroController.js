@@ -1,7 +1,3 @@
-var HeroRoute = require("./HeroRouteController");
-var Locations = require("./LocationsController");
-var Heroes = require("./HeroesController");
-
 var Hero = function ()
 {
     var self = this;
@@ -21,13 +17,21 @@ var Hero = function ()
 
         //TODO
         self.location = 1;
-        var location = Locations.getInstance().getLocation(self.location);
+        var Locations = module.parent.parent.exports.Locations;
+        var location = Locations.getLocation(self.location);
         location.addHeroToLocation(self);
 
         //init routing for socket
-        HeroRoute.init(self.socket, self);
+        // HeroRoute.init(self.socket, self);
 
         return self;
+    };
+
+    self.cleanHeroReferences = function()
+    {
+        var Locations = module.parent.parent.exports.Locations;
+        var location = Locations.getLocation(self.location);
+        location.removeHeroFromLocation(self);
     };
 
     self.isDirty = false;
