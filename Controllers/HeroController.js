@@ -71,6 +71,9 @@ var Hero = function ()
     self.setLocation = function(location)   {self.setValue('location', location); return self;};
     //endregion Setters/Getters
 
+    self.getAttack = function() { return 3;};
+    self.getAttackSpeed = function() { return 3;};
+
     //region Debug methods
     self.emitError = function(message)
     {

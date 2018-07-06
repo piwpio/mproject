@@ -47,6 +47,7 @@ var Location = function()
                 enemies[i][4] || DEFAULT_ENEMIES[name][3], //defence
             );
         }
+        return a;
     };
 
     self.canGoLeft = function()
@@ -131,10 +132,24 @@ var Location = function()
         }
     };
 
-    self.getEnemy = function(enenmyId)
+    self.getEnemy = function(enemyId)
     {
+        return self.enemies[enemyId] || null;
+    };
 
-    }
+    self.updateEnemy = function(enemyId)
+    {
+        var HeroesInstance = module.parent.parent.exports.Heroes;
+        var enemy = self.getEnemy(enemyId);
+        for (var heroId in self.heroesOnLocation) {
+            var r = {};
+            r[enemyId] = enemy.getHp();
+            HeroesInstance
+                .getHero(heroId)
+                .responseAddKey('enemies', r)
+                .sendResponse();
+        }
+    };
 };
 
 module.exports = {

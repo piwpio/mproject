@@ -17,18 +17,24 @@ var Enemy = function(name, lvl, hp, attack, defence)
 
     self.heroesLastAttack = {};
 
-    self.getHp = function(){ return self.hp};
-    self.getAttack = function(){ return self.attack};
+    self.getHp =        function(){ return self.hp};
+    self.getAttack =    function(){ return self.attack};
+
+    self.isAlive = function()
+    {
+        return self.hp > 0;
+    };
 
     self.canHeroAttack = function(heroId, heroAttackSpeed)
     {
+        heroAttackSpeed = heroAttackSpeed * 1000;
         return self.heroesLastAttack[heroId] === undefined ||
             self.heroesLastAttack[heroId] + heroAttackSpeed < Date.now();
     };
 
-    self.takeAttack = function(hero, attack)
+    self.takeAttack = function(heroId, attack)
     {
-        self.heroesLastAttack[hero.getId()] = Date.now();
+        self.heroesLastAttack[heroId] = Date.now();
         if (attack > self.defence) {
             self.hp -= (attack - self.defence);
         }
