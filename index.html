@@ -14,6 +14,11 @@
         });
         socket.on('response', function(r) {
             console.log(r);
+            if (r['chat'] !== undefined) {
+                $.each(r['chat'], function(index, data) {
+                    $("#chat").append("<span style='display:block;'><b>" + data[0] + ": </b>" + data[1] + "</span>");
+                });
+            }
         });
 
         socket.on('response_error', function(error) {
@@ -41,6 +46,19 @@
             socket.emit('debug_hero_who');
         }
 
+        $(function() {
+            $("#message-form").on("submit", function(e) {
+                e.preventDefault();
+                var message = $("#message-input").val();
+                socket.emit('chat_message', {m: message});
+                $("#chat").append(
+                    "<span style='display:block'><b>me: </b>" + message + "</span>"
+                );
+                $("#message-input").val("");
+                return false;
+            });
+        });
+
     </script>
 </head>
 
@@ -55,6 +73,12 @@
     <div style="position: absolute; top: 100px;">
         <button onclick="who()">WHO AM I</button>
         <button onclick="showHeroes()">SHOW HEROES</button>
+    </div>
+    <div id="chat" style="position: absolute; background: mintcream; height: 200px; width:100%; top: 200px;">
+        <form id="message-form">
+            <label for="message-input"></label>
+            <input id="message-input" style="width:100%; position: absolute; bottom: 0">
+        </form>
     </div>
 </div>
 

@@ -93,6 +93,22 @@ var Location = function()
     self.getHeroesOnLocation = function()
     {
         return self.heroesOnLocation;
+    };
+
+    self.heroChatMessage = function(hero, message)
+    {
+        var HeroesInstance = module.parent.parent.exports.Heroes;
+        for (var heroId in self.heroesOnLocation) {
+            if (hero.getId() == heroId) {
+                continue;
+            }
+            HeroesInstance
+                .getHero(heroId)
+                .responseAddKey('chat', {
+                    m: [hero.id, message]
+                })
+                .sendResponse();
+        }
     }
 };
 
