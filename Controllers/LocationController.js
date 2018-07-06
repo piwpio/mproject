@@ -47,7 +47,7 @@ var Location = function()
         return self.moves[1];
     };
 
-    self.addHeroToLocation = function(hero)
+    self.addHeroToLocation = function(hero, side)
     {
         //send heroes on new location info, that hero just moved to this location
         self.heroesOnLocation[hero.getId()] = 1;
@@ -62,7 +62,7 @@ var Location = function()
             HeroesInstance
                 .getHero(heroId)
                 .responseAddKey('location', {
-                    addhero: hero.id
+                    addhero:[hero.id, side]
                 })
                 .sendResponse();
         }
@@ -72,7 +72,7 @@ var Location = function()
             });
         }
     };
-    self.removeHeroFromLocation = function(hero)
+    self.removeHeroFromLocation = function(hero, side)
     {
         //send heroes on current location info, that hero just moved from this location
         delete self.heroesOnLocation[hero.getId()];
@@ -84,7 +84,7 @@ var Location = function()
             HeroesInstance
                 .getHero(heroId)
                 .responseAddKey('location', {
-                    rmhero: hero.id
+                    rmhero: [hero.id, side]
                 })
                 .sendResponse();
         }
