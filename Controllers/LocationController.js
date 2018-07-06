@@ -1,3 +1,8 @@
+var Enemy = require("./EnemyController");
+var DEFAULT_ENEMIES = {
+    'wolf': [1, 10, 1, 1] // [lvl, hp, attack, defence]
+};
+
 var init = function(locationData)
 {
     return (new Location).init(
@@ -23,10 +28,25 @@ var Location = function()
         self.id = id;
         self.terrain = terrain;
         self.moves = moves;
-        self.enemies = enemies;
+        self.enemies = initEnemies(enemies);
         self.heroesOnLocation = {};
 
         return self;
+    };
+
+    var initEnemies = function(enemies)
+    {
+        var a = {};
+        for (var i = 0; i < enemies.length; i++) {
+            var name = enemies[i][0];
+            a[i] = Enemy.init(
+                name, //name
+                enemies[i][1] || DEFAULT_ENEMIES[name][0], //lvl
+                enemies[i][2] || DEFAULT_ENEMIES[name][1], //hp
+                enemies[i][3] || DEFAULT_ENEMIES[name][2], //attack
+                enemies[i][4] || DEFAULT_ENEMIES[name][3], //defence
+            );
+        }
     };
 
     self.canGoLeft = function()
@@ -109,6 +129,11 @@ var Location = function()
                 })
                 .sendResponse();
         }
+    };
+
+    self.getEnemy = function(enenmyId)
+    {
+
     }
 };
 

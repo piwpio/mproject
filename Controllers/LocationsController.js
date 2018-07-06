@@ -4,13 +4,13 @@ var LOCATIONS_RAW = {
     1: {
         id: 1,
         t: 'f', // terrain type
-        e: [],   //enemies
+        e: [['wolf', 1]],   //enemies [name, lvl]
         m: [2,null]   //moves - 0 left, 1 right
     },
     2: {
         id: 2,
         t: 'f', // terrain type
-        e: [],   //enemies
+        e: [['wolf', 2]],   //enemies
         m: [3,1]   //moves - 0 left, 1 right
     },
     3: {
@@ -21,17 +21,17 @@ var LOCATIONS_RAW = {
     }
 };
 
-var LocationInstance = undefined;
+var LocationsInstance = undefined;
 var init = function()
 {
-    if (LocationInstance === undefined) {
-        LocationInstance = (new Locations()).init();
+    if (LocationsInstance === undefined) {
+        LocationsInstance = (new Locations()).init();
     }
-    return LocationInstance;
+    return LocationsInstance;
 };
 var getInstance = function()
 {
-    return LocationInstance;
+    return LocationsInstance;
 };
 
 var Locations = function()
