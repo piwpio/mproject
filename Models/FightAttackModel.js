@@ -8,11 +8,11 @@ var execute = function(hero, enemyId, enemyType)
     var heroId = hero.getId();
     var locationId = hero.getLocation();
     var Locations = module.parent.parent.exports.Locations;
-    var Location = Locations.getLocation(locationId);
+    var currentLocation = Locations.getLocation(locationId);
     if (enemyType === 'h') {
 
     } else {
-        var enemy = Location.getEnemy(enemyId);
+        var enemy = currentLocation.getEnemy(enemyId);
         if (!enemy) {
             hero.emitError({message: 'no enemy with id ' + enemyId + ' on location ' + locationId});
             return;
@@ -26,20 +26,20 @@ var execute = function(hero, enemyId, enemyType)
             //hero attack first
             enemy.takeAttack(heroId, hero.getAttack());
             if (enemy.isAlive()) {
-                console.log('alive');
+                console.log('enemy still alive');
                 // hero.takeAttack(enemy.getAttack());
             } else {
                 //rewards
                 // var damageTotal = 0;
                 // var attackHeroes = enemy.getHeroesWhichAttacked();
                 // for (var hId in attackHeroes) {
-                //     if (Location.isHeroOnLocation(heroId)){
+                //     if (currentLocation.isHeroOnLocation(heroId)){
                 //         var exp = Math.round((attackHeroes[hId]/enemy.getMaxHp()) * 100);
                 //
                 //     }
                 // }
 
-                console.log('dead');
+                console.log('enemy dead');
             }
 
         } else {
@@ -50,9 +50,10 @@ var execute = function(hero, enemyId, enemyType)
             // }
         }
 
-        Location.broadcastEnemy(enemyId, hero);
+        currentLocation.broadcastEnemy(enemyId, hero);
     }
 
+    hero.setLastHeroAction();
     hero.sendResponse();
 };
 

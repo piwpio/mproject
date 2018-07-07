@@ -17,7 +17,7 @@ var Enemy = function(name, level, hp, attack, defence, attackSpeed, exp)
 
     self.respSeconds = 10 * level;
     self.respTime = null;
-    self.isAlive = true;
+    self.alive = true;
     self.maxHp = hp * level;
 
     self.heroesLastAttackTs = {};
@@ -40,7 +40,7 @@ var Enemy = function(name, level, hp, attack, defence, attackSpeed, exp)
 
     self.isAlive = function()
     {
-        return self.isAlive;
+        return self.alive;
     };
 
     self.takeAttack = function(heroId, heroAttack)
@@ -64,7 +64,7 @@ var Enemy = function(name, level, hp, attack, defence, attackSpeed, exp)
 
         if (self.hp <= 0) {
             self.respTime = Date.now() + self.respSeconds;
-            self.isAlive = false;
+            self.alive = false;
         }
     };
 
@@ -76,7 +76,7 @@ var Enemy = function(name, level, hp, attack, defence, attackSpeed, exp)
     self.respawn = function()
     {
         self.respTime = null;
-        self.isAlive = true;
+        self.alive = true;
     };
 
     self.cleanAferDeath = function()
