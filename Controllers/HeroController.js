@@ -23,7 +23,7 @@ var Hero = function ()
         //TODO
         self.id = Math.round(Math.random() * 10);
         self.socket = socket;
-        self.lastActionTs = Date.now();
+        self.lastActionTs = Date.now() - 10000;
 
         //TODO
         self.location = 1;
@@ -130,7 +130,7 @@ var Hero = function ()
         var now = Date.now();
         var diff = self.weight - self.speed;
         var speedWeight = diff > 1 ? diff * 1000  : 1000;
-        return self.lastActionTs + speedWeight < now;
+        return self.lastActionTs + speedWeight <= now;
     };
 
     self.setLastHeroAction = function()

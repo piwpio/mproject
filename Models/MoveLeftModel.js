@@ -22,6 +22,7 @@ var execute = function(hero)
         return;
     }
 
+    hero.setLastHeroAction();
     hero.sendResponse();
 };
 
