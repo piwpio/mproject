@@ -1,6 +1,6 @@
 var Enemy = require("./EnemyController");
 var DEFAULT_ENEMIES = {
-    'wolf': [1, 10, 1, 1] // [lvl, hp, attack, defence]
+    'wolf': [1, 10, 1, 1, 1, 100] // [lvl, hp, attack, defence, attackSpeed, exp]
 };
 
 var init = function(locationData)
@@ -45,6 +45,8 @@ var Location = function()
                 enemies[i][2] || DEFAULT_ENEMIES[name][1], //hp
                 enemies[i][3] || DEFAULT_ENEMIES[name][2], //attack
                 enemies[i][4] || DEFAULT_ENEMIES[name][3], //defence
+                enemies[i][5] || DEFAULT_ENEMIES[name][4], //attack speed
+                enemies[i][6] || DEFAULT_ENEMIES[name][5], //exp points
             );
         }
         return a;
@@ -116,6 +118,11 @@ var Location = function()
         return self.heroesOnLocation;
     };
 
+    self.isHeroOnLocation = function(heroId)
+    {
+        return !!self.heroesOnLocation[heroId];
+    };
+
     self.heroChatMessage = function(hero, message)
     {
         var HeroesInstance = module.parent.parent.exports.Heroes;
@@ -137,17 +144,27 @@ var Location = function()
         return self.enemies[enemyId] || null;
     };
 
-    self.updateEnemy = function(enemyId)
+    self.broadcastEnemy = function(enemyId, hero)
     {
         var HeroesInstance = module.parent.parent.exports.Heroes;
         var enemy = self.getEnemy(enemyId);
         for (var heroId in self.heroesOnLocation) {
+            heroId = parseInt(heroId);
             var r = {};
-            r[enemyId] = enemy.getHp();
-            HeroesInstance
-                .getHero(heroId)
-                .responseAddKey('enemies', r)
-                .sendResponse();
+            r[enemyId] = {
+                hp: enemy.getHp(),
+                et: 'm'
+            };
+            if (hero.getId() !== heroId) {
+                r[enemyId]['a'] = hero.getId();
+                HeroesInstance
+                    .getHero(heroId)
+                    .responseAddKey('enemy', r)
+                    .sendResponse();
+            } else {
+                hero
+                    .responseAddKey('enemy', r)
+            }
         }
     };
 };

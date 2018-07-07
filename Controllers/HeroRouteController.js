@@ -14,7 +14,7 @@ var init = function(hero)
     //Hero chat
     socket.on('chat_message', function(d){ChatMessageModel.execute(hero, d.m)});
     //Hero fight
-    socket.on('fight_attack', function(d){FightAttackModel.execute(hero, d.eid, d.eit)});
+    socket.on('fight_attack', function(d){FightAttackModel.execute(hero, d.eid, d.et)});
 };
 
 module.exports = {

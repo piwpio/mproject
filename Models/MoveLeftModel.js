@@ -1,5 +1,10 @@
 var execute = function(hero)
 {
+    if (!hero.canHeroAction()) {
+        hero.emitError({message: 'cant do action yet'});
+        return;
+    }
+
     var locationId = hero.getLocation();
     var Locations = module.parent.parent.exports.Locations;
     var currentLocation = Locations.getLocation(locationId);
