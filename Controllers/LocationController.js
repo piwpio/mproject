@@ -113,9 +113,19 @@ var Location = function()
         }
     };
 
-    self.getHeroesOnLocation = function()
+    self.getHeroesIdsOnLocation = function()
     {
         return self.heroesOnLocation;
+    };
+
+    self.getHeroOnLocation = function(heroId)
+    {
+        if (self.isHeroOnLocation(heroId)) {
+            var HeroesInstance = module.parent.parent.exports.Heroes;
+            HeroesInstance.getHero(heroId);
+        } else {
+            return null;
+        }
     };
 
     self.isHeroOnLocation = function(heroId)

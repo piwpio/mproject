@@ -5,7 +5,6 @@ var execute = function(hero, enemyId, enemyType)
         return;
     }
 
-    var heroId = hero.getId();
     var locationId = hero.getLocation();
     var Locations = module.parent.parent.exports.Locations;
     var currentLocation = Locations.getLocation(locationId);
@@ -24,20 +23,28 @@ var execute = function(hero, enemyId, enemyType)
 
         if (hero.getAttackSpeed() >= enemy.getAttackSpeed()) {
             //hero attack first
-            enemy.takeAttack(heroId, hero.getAttack());
+            enemy.takeAttack(hero);
             if (enemy.isAlive()) {
                 console.log('enemy still alive');
-                // hero.takeAttack(enemy.getAttack());
+                hero.takeAttack(enemy);
             } else {
                 //rewards
-                // var damageTotal = 0;
-                // var attackHeroes = enemy.getHeroesWhichAttacked();
-                // for (var hId in attackHeroes) {
-                //     if (currentLocation.isHeroOnLocation(heroId)){
-                //         var exp = Math.round((attackHeroes[hId]/enemy.getMaxHp()) * 100);
-                //
-                //     }
-                // }
+                var damageTotalByHeroesOnLocation = 0;
+                var attackHeroes = enemy.getHeroesWhichAttacked();
+                var heroesOnLocationIds = [];
+                for (var hid in attackHeroes) {
+                    if (currentLocation.isHeroOnLocation(hid)){
+                        heroesOnLocationIds.push(hid);
+                        damageTotalByHeroesOnLocation = attackHeroes[hid];
+                    }
+                }
+                for (hid in heroesOnLocationIds) {
+                    var exp = Math.round((attackHeroes[hid]/damageTotalByHeroesOnLocation) * 100);
+                    var h = currentLocation.getHeroOnLocation(hid);
+                    if (h) {
+                        h.setExp(h.getExp() + exp);
+                    }
+                }
 
                 console.log('enemy dead');
             }

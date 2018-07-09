@@ -43,8 +43,10 @@ var Enemy = function(name, level, hp, attack, defence, attackSpeed, exp)
         return self.alive;
     };
 
-    self.takeAttack = function(heroId, heroAttack)
+    self.takeAttack = function(hero)
     {
+        var heroId = hero.getId();
+        var heroAttack = hero.getAttack();
         //hero last attack ts
         self.heroesLastAttackTs[heroId] = Date.now();
         //hero attack counter

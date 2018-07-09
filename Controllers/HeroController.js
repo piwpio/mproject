@@ -143,10 +143,11 @@ var Hero = function ()
         return self.hp > 0;
     };
 
-    self.takeAttack = function(damage)
+    self.takeAttack = function(enemy)
     {
+        var damage = enemy.getAttack();
         if (damage > self.defence) {
-            self.setValue('hp', damage - self.defence);
+            self.setValue('hp', self.hp - (damage - self.defence));
         } else if (damage === self.defence) {
             //luck,
         }
