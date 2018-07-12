@@ -9,4 +9,6 @@ var raw = {
     }
 };
 
-module.exports = {raw};
+module.exports = {
+    getAll: function() { return raw; }
+};

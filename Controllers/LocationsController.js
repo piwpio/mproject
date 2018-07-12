@@ -22,12 +22,13 @@ var LocationConstants = require("../Constants/LocationsConstants");
 var Locations2 = function()
 {
     this._locations = {};
-    for (var locId in LocationConstants) {
-        var l = LocationConstants[locId];
+    var locationsRaw = LocationConstants.getAll();
+    for (var locId in locationsRaw) {
+        var location = locationsRaw[locId];
         this._locations[locId] = Location.create(
-            l.id,
-            l.moves || {},
-            l.enemies || {}
+            location.id,
+            location.moves     || {},
+            location.enemies   || {}
         );
     }
 };

@@ -32,14 +32,15 @@ Location2.prototype._createEnemies = function(enemies)
     var index = 0;
     for (var name in enemies) {
         var enemy = enemies[name];
+        var enemiesRaw =  EnemiesConstants.getAll();
         a[index++] = Enemy.create(
             name,
-            enemy.level         || EnemiesConstants[name].level,
-            enemy.hp            || EnemiesConstants[name].hp,
-            enemy.attack        || EnemiesConstants[name].attack,
-            enemy.defence       || EnemiesConstants[name].defence,
-            enemy.attack_speed  || EnemiesConstants[name].attack_speed,
-            enemy.exp           || EnemiesConstants[name].exp
+            enemy.level         || enemiesRaw[name].level,
+            enemy.hp            || enemiesRaw[name].hp,
+            enemy.attack        || enemiesRaw[name].attack,
+            enemy.defence       || enemiesRaw[name].defence,
+            enemy.attack_speed  || enemiesRaw[name].attack_speed,
+            enemy.exp           || enemiesRaw[name].exp
         );
     }
     return a;
