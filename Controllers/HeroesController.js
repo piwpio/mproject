@@ -1,84 +1,60 @@
-var Hero = require("./HeroController");
-
-var HeroesInstance = undefined;
+var Instance = undefined;
 var init = function()
 {
-    if (HeroesInstance === undefined) {
-        HeroesInstance = (new Heroes()).init();
+    if (Instance === undefined) {
+        Instance = new Heroes2();
     }
-    return HeroesInstance;
+    return Instance;
 };
 var getInstance = function()
 {
-    return HeroesInstance;
+    return Instance;
 };
-
-var Heroes = function()
-{
-    var self = this;
-
-    var HEROES = null;
-
-    self.init = function()
-    {
-        HEROES = {};
-        return self;
-    };
-
-    self.initHeroConnect = function(socket)
-    {
-        //connect, init hero etc
-        var hero = Hero.init(socket);
-
-        socket._heroId = hero.getId();
-        socket.getHeroId = function() {return this._heroId};
-
-        self.addHero(hero);
-        socket.emit('connected');
-
-        //disconnect
-        socket.on('disconnect', function() {
-            self.removeHero(socket.getHeroId());
-            hero.heroOnDisconnect();
-            console.log("HERO " + socket.getHeroId() + " DISCONNECTED")
-        });
-    };
-
-    self.addHero = function(hero)
-    {
-        HEROES[hero.getId()] = hero;
-    };
-
-    self.removeHero = function(heroId)
-    {
-        delete HEROES[heroId];
-    };
-
-    self.getHero = function(id)
-    {
-        return HEROES[id];
-    };
-
-    self.getHeroes = function()
-    {
-        return HEROES;
-    };
-
-    //region debug methods
-    self.debugShowHeroes = function()
-    {
-        var total = 0;
-        for(var key in HEROES) {
-            total++;
-            var hero = HEROES[key];
-            console.log("Hero: " + hero.getId(), "Location: " + hero.getLocation())
-        }
-        console.log("Total heroes: " + total);
-    };
-    //endregion debug methods
-};
-
 module.exports = {
     init,
     getInstance
+};
+
+
+var Hero = require("./HeroController");
+
+Heroes2 = function()
+{
+    this.heroes = {};
+};
+
+Heroes2.prototype.getHero =     function(id) { return this.heroes[id]; };
+Heroes2.prototype.getHeroes =   function() { return this.heroes; };
+Heroes2.prototype.addHero =     function(hero) { this.heroes[hero.getId()] = hero; };
+Heroes2.prototype.removeHero =  function(heroId) { delete this.heroes[heroId]; };
+
+Heroes2.prototype.createHero = function(socket)
+{
+    //CONNECT HERO INIT ETC
+    var hero = Hero.create(socket);
+
+    socket._heroId = hero.getId();
+    socket.getHeroId = function() {return this._heroId};
+
+    this.addHero(hero);
+    socket.emit('connected');
+
+    //DISCONNECT
+    var self = this;
+    socket.on('disconnect', function() {
+        self.removeHero(socket.getHeroId());
+        hero.heroOnDisconnect();
+        console.log("HERO " + socket.getHeroId() + " DISCONNECTED")
+    });
+};
+
+Heroes2.prototype.debugShowHeroes = function()
+{
+    var total = 0;
+    for(var key in this.heroes) {
+        total++;
+        var hero = this.heroes[key];
+        console.log("Hero: " + hero.getId(), "Location: " + hero.getLocation());
+    }
+    console.log("Total heroes: " + total);
 };

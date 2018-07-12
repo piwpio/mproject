@@ -32,9 +32,18 @@ module.exports = {
 var io = require('socket.io')(server,{});
 io.sockets.on('connection', function(socket) {
     var HeroesInstance = Heroes.getInstance();
-    HeroesInstance.initHeroConnect(socket);
+    HeroesInstance.createHero(socket);
     HeroRoute.init(HeroesInstance.getHero(socket.getHeroId()));
-    Debug.getInstance().addHeroDebug(socket);
+    // Debug.getInstance().addHeroDebug(socket);
     console.log("HERO " + socket.getHeroId() + " CONNECTED");
 });
 console.log("SOCKETS LISTENING");
+
+setInterval(function() {
+    var memory = process.memoryUsage();
+    var status = "";
+    for (var key in memory) {
+        status += key + "=" + (Math.round((memory[key] / 1024 / 1024) * 100) / 100) + "MB\t";
+    }
+    console.log(status);
+}, 3000);

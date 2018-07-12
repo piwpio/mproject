@@ -1,94 +1,82 @@
-var init = function(name, lvl, hp, attack, defence, attackSpeed, exp)
+var create = function(name, lvl, hp, attack, defence, attackSpeed, exp)
 {
-    return new Enemy(name, lvl, hp, attack, defence, attackSpeed, exp);
+    return new Enemy2(name, lvl, hp, attack, defence, attackSpeed, exp);
+};
+module.exports = {
+    create: create
 };
 
-var Enemy = function(name, level, hp, attack, defence, attackSpeed, exp)
+
+var Enemy2 = function(name, level, hp, attack, defence, attackSpeed, exp)
 {
-    var self = this;
+    this._name = name;
+    this._level = level;
+    this._hp = hp * level;
+    this._attack = attack * level;
+    this._defence = defence * level;
+    this._attackSpeed = attackSpeed;
+    this._exp = exp;
 
-    self.name = name;
-    self.level = level;
-    self.hp = hp * level;
-    self.attack = attack * level;
-    self.defence = defence * level;
-    self.attackSpeed = attackSpeed;
-    self.exp = exp;
+    this._respSeconds = 10 * level;
+    this._respTime = null;
+    this._alive = true;
+    this._maxHp = hp * level;
 
-    self.respSeconds = 10 * level;
-    self.respTime = null;
-    self.alive = true;
-    self.maxHp = hp * level;
+    this._heroesLastAttackTs = {};
+    this._heroesAttackDamage = {};
+};
 
-    self.heroesLastAttackTs = {};
-    self.heroesAttackDamage = {};
+Enemy2.prototype.getName =          function(){ return this._name };
+Enemy2.prototype.getLevel =         function(){ return this._level };
+Enemy2.prototype.getHp =            function(){ return this._hp };
+Enemy2.prototype.getMaxHp =         function(){ return this._maxHp };
+Enemy2.prototype.getAttack =        function(){ return this._attack };
+Enemy2.prototype.getDefence =       function(){ return this._defence };
+Enemy2.prototype.getAttackSpeed =   function(){ return this._attackSpeed };
 
-    self.name = name;
-    self.level = level;
-    self.hp = hp * level;
-    self.attack = attack * level;
-    self.defence = defence * level;
-    self.attackSpeed = attackSpeed;
+Enemy2.prototype.isAlive =          function() {return this._alive;};
 
-    self.getName =          function(){ return self.name };
-    self.getLevel =         function(){ return self.level };
-    self.getHp =            function(){ return self.hp };
-    self.getMaxHp =         function(){ return self.maxHp };
-    self.getAttack =        function(){ return self.attack };
-    self.getDefence =       function(){ return self.defence };
-    self.getAttackSpeed =   function(){ return self.attackSpeed };
+Enemy2.prototype.takeAttack = function(hero)
+{
+    var heroId = hero.getId();
+    var heroAttack = hero.getAttack();
+    //hero last attack ts
+    this._heroesLastAttackTs[heroId] = Date.now();
+    //hero attack counter
+    if (this._heroesAttackDamage[heroId] === undefined) {
+        this._heroesAttackDamage[heroId] = 0;
+    }
 
-    self.isAlive = function()
-    {
-        return self.alive;
-    };
+    if (heroAttack > this._defence) {
+        var damage = heroAttack - this._defence;
+        var damageDealt = this._hp - damage > 0 ? damage : this._hp;
+        this._hp -= damage;
+        this._heroesAttackDamage[heroId] += damageDealt;
 
-    self.takeAttack = function(hero)
-    {
-        var heroId = hero.getId();
-        var heroAttack = hero.getAttack();
-        //hero last attack ts
-        self.heroesLastAttackTs[heroId] = Date.now();
-        //hero attack counter
-        if (self.heroesAttackDamage[heroId] === undefined) {
-            self.heroesAttackDamage[heroId] = 0;
-        }
+    } else if (heroAttack === this._defence) {
+        //luck,
+    }
 
-        if (heroAttack > self.defence) {
-            var damage = heroAttack - self.defence;
-            var damageDealt = self.hp - damage > 0 ? damage : self.hp;
-            self.hp -= damage;
-            self.heroesAttackDamage[heroId] += damageDealt;
-
-        } else if (heroAttack === self.defence) {
-            //luck,
-        }
-
-        if (self.hp <= 0) {
-            self.respTime = Date.now() + self.respSeconds;
-            self.alive = false;
-        }
-    };
-
-    self.getHeroesWhichAttacked = function()
-    {
-        return self.heroesAttackDamage;
-    };
-
-    self.respawn = function()
-    {
-        self.respTime = null;
-        self.alive = true;
-    };
-
-    self.cleanAferDeath = function()
-    {
-        self.heroesLastAttackTs = {};
-        self.heroesAttackDamage = {};
-        self.respTime = Date.now() + (self.respSeconds * 1000);
+    if (this._hp <= 0) {
+        this._respTime = Date.now() + this._respSeconds;
+        this._alive = false;
     }
 };
 
-module.exports = {
-    init: init
+Enemy2.prototype.getHeroesWhichAttacked = function()
+{
+    return this._heroesAttackDamage;
+};
+
+Enemy2.prototype.respawn = function()
+{
+    this._respTime = null;
+    this._alive = true;
+};
+
+Enemy2.prototype.cleanAferDeath = function()
+{
+    this._heroesLastAttackTs = {};
+    this._heroesAttackDamage = {};
+    this._respTime = Date.now() + (this._respSeconds * 1000);
 };

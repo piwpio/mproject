@@ -1,176 +1,137 @@
-var Hero = function ()
+var create = function(socket)
 {
-    var self = this;
-
-    //main control varibles
-    self.socket = null;
-    self.id = null;
-
-    //specific hero game variables
-    self.location = null;
-
-    self.name = null;
-    self.level = null;
-    self.hp = null;
-    self.attack = null;
-    self.defence = null;
-    self.speed = null;
-    self.attackSpeed = null;
-    self.weight = null;
-
-    self.heroOnConnect = function(socket)
-    {
-        //TODO
-        self.id = Math.round(Math.random() * 10);
-        self.socket = socket;
-        self.lastActionTs = Date.now() - 10000;
-
-        //TODO
-        self.location = 1;
-
-        //TODO
-        self.name = 'Warrior';
-        self.level = 1;
-        self.exp = 0;
-        self.hp = 10;
-        self.attack = 3;
-        self.defence = 1;
-        self.speed = 1;
-        self.attackSpeed = 1;
-        self.weight = 3;
-
-        return self;
-    };
-
-    self.heroOnDisconnect = function()
-    {
-        var Locations = module.parent.parent.exports.Locations;
-        var location = Locations.getLocation(self.location);
-        location.removeHeroFromLocation(self);
-    };
-
-    //region Response
-    self.isDirty = false;
-    self.response = {};
-    self.setValue = function(field, value)
-    {
-      self[field] = value;
-      if (!self.response.hasOwnProperty('h')) {
-          self.response['h'] = {};
-      }
-      self.response['h'][field] = value;
-      self.isDirty = true;
-    };
-
-    self.sendResponse = function()
-    {
-        if (self.isDirty) {
-            self.socket.emit('response', self.response);
-            self.response = {};
-            self.isDirty = false;
-        }
-    };
-
-    self.responseAddKey = function(key, data)
-    {
-        if (!self.response.hasOwnProperty(key)) {
-            self.response[key] = data;
-            self.isDirty = true;
-        } else {
-            console.log('ERROR, HERO RESPONSE HAVE THIS VIEW ALREADY');
-            console.log("OLD", self.response[key]);
-            console.log("NEW", data);
-        }
-
-        return self;
-    };
-
-    //endregion Response
-
-    //region Setters/Getters
-    self.getId = function()     {return self.id;};
-    self.getSocket = function() {return self.socket;};
-
-    self.getLocation = function()           {return self.location;};
-    self.setLocation = function(location)   {self.setValue('location', location); return self;};
-
-    self.getName = function() { return self.name;};
-    self.setName = function(v) { self.setValue('name', v); return self;};
-
-    self.getLevel = function() { return self.level;};
-    self.setLevel = function(v) { self.setValue('level', v); return self;};
-
-    self.getExp = function() { return self.exp;};
-    self.setExp = function(v) { self.setValue('exp', v); return self;};
-    self.addExp = function(v) { self.setValue('exp', self.exp + v); return self;};
-
-    self.getHp = function() { return self.hp > 0 ? self.hp : 0;};
-    self.setHp = function(v) { self.setValue('hp', (v > 0 ? v : 0)); return self;};
-    self.addHp = function(v) { self.setValue('hp', self.hp + v); return self;};
-
-    self.getAttack = function() { return self.attack;};
-    self.setAttack = function(v) { self.setValue('attack', v); return self; };
-
-    self.getDefence = function() { return self.defence;};
-    self.setDefence = function(v) { self.setValue('defence', v); return self; };
-
-    self.getSpeed = function() { return self.speed;};
-    self.setSpeed = function(v) { self.setValue('speed', v); return self; };
-
-    self.getAttackSpeed = function() { return self.attackSpeed;};
-    self.setAttackSpeed = function(v) { self.setValue('attackSpeed', v); return self; };
-
-    self.getWeight = function() { return self.weight;};
-    self.setWeight = function(v) { self.setValue('weight', v); return self; };
-
-    //endregion Setters/Getters
-    self.lastActionTs = null;
-    self.canHeroAction = function()
-    {
-        var now = Date.now();
-        var diff = self.weight - self.speed;
-        var speedWeight = diff > 1 ? diff * 1000  : 1000;
-        return self.lastActionTs + speedWeight <= now;
-    };
-
-    self.setLastHeroAction = function()
-    {
-        self.lastActionTs = Date.now();
-    };
-
-    self.isAlive = function()
-    {
-        return self.hp > 0;
-    };
-
-    self.takeAttack = function(enemy)
-    {
-        var damage = enemy.getAttack();
-        if (damage > self.defence) {
-            self.setValue('hp', self.hp - (damage - self.defence));
-        } else if (damage === self.defence) {
-            //luck,
-        }
-    };
-
-    //region Debug methods
-    self.emitError = function(message)
-    {
-        self.socket.emit('response_error', {message: message});
-    };
-
-    self.whoAmI = function()
-    {
-        console.log('Hero', self.id);
-    }
-    //endregion Debug methods
+    return new Hero2(socket);
 };
-
-var init = function(socket)
-{
-    return (new Hero).heroOnConnect(socket);
-};
-
 module.exports = {
-    init: init
+    create: create
 };
+
+
+var Hero2 = function(socket)
+{
+    //TODO
+    this._id = Math.round(Math.random() * 10);
+    this._socket = socket;
+    this._lastActionTs = Date.now() - 10000;
+
+    //TODO
+    this._location = 1;
+
+    //TODO
+    this._name = 'Warrior';
+    this._level = 1;
+    this._exp = 0;
+    this._hp = 10;
+    this._attack = 3;
+    this._defence = 1;
+    this._speed = 1;
+    this._attackSpeed = 1;
+    this._weight = 3;
+
+    //RESPONSE
+    this._isDirty = false;
+    this._response = {};
+
+    //CONTROL VARIABLES
+    this._lastActionTs = null;
+
+    return this;
+};
+
+//region Setters/Getters
+
+Hero2.prototype.getId = function()     {return this._id;};
+Hero2.prototype.getSocket = function() {return this._socket;};
+
+Hero2.prototype.getLocation = function()           {return this._location;};
+Hero2.prototype.setLocation = function(location)   {this._setValue('_location', location); return this;};
+
+Hero2.prototype.getName = function() { return this._name;};
+Hero2.prototype.setName = function(v) { this._setValue('_name', v); return this;};
+
+Hero2.prototype.getLevel = function() { return this._level;};
+Hero2.prototype.setLevel = function(v) { this._setValue('_level', v); return this;};
+
+Hero2.prototype.getExp = function() { return this._exp;};
+Hero2.prototype.setExp = function(v) { this._setValue('_exp', v); return this;};
+Hero2.prototype.addExp = function(v) { this._setValue('_exp', this._exp + v); return this;};
+
+Hero2.prototype.getHp = function() { return this._hp > 0 ? this._hp : 0;};
+Hero2.prototype.setHp = function(v) { this._setValue('_hp', (v > 0 ? v : 0)); return this;};
+Hero2.prototype.addHp = function(v) { this._setValue('_hp', this._hp + v); return this;};
+
+Hero2.prototype.getAttack = function() { return this._attack;};
+Hero2.prototype.setAttack = function(v) { this._setValue('_attack', v); return this; };
+
+Hero2.prototype.getDefence = function() { return this._defence;};
+Hero2.prototype.setDefence = function(v) { this._setValue('_defence', v); return this; };
+
+Hero2.prototype.getSpeed = function() { return this._speed;};
+Hero2.prototype.setSpeed = function(v) { this._setValue('_speed', v); return this; };
+
+Hero2.prototype.getAttackSpeed = function() { return this._attackSpeed;};
+Hero2.prototype.setAttackSpeed = function(v) { this._setValue('_attackSpeed', v); return this; };
+
+Hero2.prototype.getWeight = function() { return this._weight;};
+Hero2.prototype.setWeight = function(v) { this._setValue('_weight', v); return this; };
+
+//endregion Setters/Getters
+
+Hero2.prototype.heroOnDisconnect = function()
+{
+    var Locations = module.parent.parent.exports.Locations;
+    var location = Locations.getLocation(this._location);
+    location.removeHeroFromLocation(this);
+};
+
+Hero2.prototype._setValue = function(field, value)
+{
+    this[field] = value;
+    if (this._response['h'] === undefined) {
+        this._response['h'] = {};
+    }
+    this._response['h'][field] = value;
+    this._isDirty = true;
+};
+
+Hero2.prototype.sendResponse = function()
+{
+    if (this._isDirty) {
+        this._socket.emit('response', this._response);
+        this._response = {};
+        this._isDirty = false;
+    }
+};
+
+Hero2.prototype.canHeroAction = function()
+{
+    var now = Date.now();
+    var diff = this._weight - this._speed;
+    var speedWeight = diff > 1 ? diff * 1000  : 1000;
+    return this._lastActionTs + speedWeight <= now;
+};
+
+Hero2.prototype.setLastHeroAction = function()
+{
+    this._lastActionTs = Date.now();
+};
+
+Hero2.prototype.isAlive = function()
+{
+    return this._hp > 0;
+};
+
+Hero2.prototype.takeAttack = function(enemy)
+{
+    var damage = enemy.getAttack();
+    if (damage > this._defence) {
+        this._setValue('hp', this._hp - (damage - this._defence));
+    } else if (damage === this._defence) {
+        //luck,
+    }
+};
+
+//region Debug methods
+Hero2.prototype.emitError = function(message) {this.socket.emit('response_error', {message: message});};
+Hero2.prototype.whoAmI =    function() {console.log('Hero', this._id);};
+//endregion DEBUG METHODS
