@@ -26,7 +26,7 @@ var Locations2 = function()
     for (var locId in locationsRaw) {
         var location = locationsRaw[locId];
         this._locations[locId] = Location.create(
-            location.id,
+            locId,
             location.moves     || {},
             location.enemies   || {}
         );

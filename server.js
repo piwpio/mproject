@@ -42,6 +42,33 @@ io.sockets.on('connection', function(socket) {
 });
 console.log("SOCKETS LISTENING");
 
+setInterval(function() {
+    var heroes =  Heroes.getInstance().getHeroes();
+    for (var heroId in heroes) {
+        var hero = heroes[heroId];
+        var heroResponses = hero.getResponsesReady();
+        for (var key in heroResponses) {
+            hero.sendResponse(key);
+        }
+    }
+}, 100);
+
+setInterval(function() {
+    var locations =  Locations.getInstance().getLocations();
+    for (var locationId in locations) {
+        var location = locations[locationId];
+        var locationResponses = location.getResponsesReady();
+        var sockets = [];
+        for (var key in locationResponses) {
+            console.log(location.getResponse(key));
+            if (!sockets.length) {
+                sockets = location.getHeroesOnLocationSockets();
+            }
+            location.broadcastResponse(key, sockets);
+        }
+    }
+}, 100);
+
 // setInterval(function() {
 //     var memory = process.memoryUsage();
 //     var status = "";

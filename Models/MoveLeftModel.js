@@ -10,20 +10,20 @@ var execute = function(hero)
     var currentLocation = Locations.getLocation(locationId);
     if (currentLocation.canGoLeft()) {
         var newLocationId = currentLocation.getLeftLocationId();
-        var newLocation = Locations.getLocation(newLocationId);
-        hero.setLocation(newLocationId);
+        // var newLocation = Locations.getLocation(newLocationId);
+        var responseId = hero.createNewResponse();
+        hero.setLocation(newLocationId, responseId);
         //send heroes on current location info, that hero just moved from this location
-        currentLocation.removeHeroFromLocation(hero, 0);
+        // currentLocation.removeHeroFromLocation(hero, 0);
         //send heroes on new location info, that hero just moved to this location
-        newLocation.addHeroToLocation(hero, 1);
+        // newLocation.addHeroToLocation(hero, 1);
+        hero.closeResponse(responseId);
+        hero.setLastHeroAction();
 
     } else {
         hero.emitError({message: 'cant go left'});
-        return;
     }
 
-    hero.setLastHeroAction();
-    hero.sendResponse();
 };
 
 module.exports = {

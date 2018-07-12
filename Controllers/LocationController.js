@@ -9,18 +9,23 @@ module.exports = {
 
 var Enemy = require("./EnemyController");
 var EnemiesConstants = require("../Constants/EnemiesConstants");
+var ResponseController = require("./ResponseController");
 
 var Location2 = function(id, moves, enemies)
 {
+    ResponseController.call(this, 'location_response', 'location');
+
     this._id = id;
     this._moves = moves;
     this._enemies = this._createEnemies(enemies);
 
     this._heroesOnLocation = {};
 };
+Location2.prototype = Object.create(ResponseController.prototype);
 
-Location2.prototype.canGoLeft = function()   { return this._moves.left !== null };
-Location2.prototype.canGoRight = function()  { return this._moves.right !== null };
+Location2.prototype.getId = function()  { return this._id };
+Location2.prototype.canGoLeft = function()   { return this._moves.left !== undefined };
+Location2.prototype.canGoRight = function()  { return this._moves.right !== undefined };
 Location2.prototype.getLeftLocationId = function()   { return this._moves.left; };
 Location2.prototype.getRightLocationId = function()  { return this._moves.right; };
 Location2.prototype.isHeroOnLocation = function(heroId) { return !!self._heroesOnLocation[heroId]; };
@@ -46,47 +51,28 @@ Location2.prototype._createEnemies = function(enemies)
     return a;
 };
 
-Location2.prototype.addHeroToLocation = function(hero, side)
+Location2.prototype.getHeroesOnLocationSockets = function(responseId)
 {
-    //send heroes on new location info, that hero just moved to this location
-    // self.heroesOnLocation[hero.getId()] = 1;
-    // var HeroesInstance = module.parent.parent.exports.Heroes;
-    // var heroesOnLocation = [];
-    // for (var heroId in self.heroesOnLocation) {
-    //     heroId = parseInt(heroId);
-    //     if (hero.getId() == heroId) {
-    //         continue;
-    //     }
-    //     heroesOnLocation.push(heroId);
-    //     HeroesInstance
-    //         .getHero(heroId)
-    //         .responseAddKey('location', {
-    //             addhero:[hero.id, side]
-    //         })
-    //         .sendResponse();
-    // }
-    // if (heroesOnLocation.length) {
-    //     hero.responseAddKey('location', {
-    //         heroes: heroesOnLocation
-    //     });
-    // }
+    var HeroesInstance = module.parent.parent.exports.Heroes;
+    console.log('BBB');
+    var aa = [];
+    for (var heroId in this._heroesOnLocation) {
+        console.log(heroId);
+        aa.push(HeroesInstance.getHero(heroId).getSocket());
+    }
 };
-Location2.prototype.removeHeroFromLocation = function(hero, side)
+
+Location2.prototype.addHeroToLocation = function(responseId, hero, side)
 {
-    //send heroes on current location info, that hero just moved from this location
-    // delete self.heroesOnLocation[hero.getId()];
-    // var HeroesInstance = module.parent.parent.exports.Heroes;
-    // for (var heroId in self.heroesOnLocation) {
-    //     if (hero.getId() == heroId) {
-    //         continue;
-    //     }
-    //     HeroesInstance
-    //         .getHero(heroId)
-    //         .responseAddKey('location', {
-    //             rmhero: [hero.id, side]
-    //         })
-    //         .sendResponse();
-    // }
+    this._heroesOnLocation[hero.getId()] = 1;
+    this.setResponseTriggeredBy(responseId, hero.getId());
+    this.responseAddKey(responseId, 'add_hero', [hero.getId(), side])
+};
+
+Location2.prototype.removeHeroFromLocation = function(responseId, hero, side)
+{
+    delete this._heroesOnLocation[hero.getId()];
+    this.responseAddKey(responseId, 'rm_hero', [hero.getId(), side])
 };
 
 Location2.prototype.getHeroOnLocation = function(heroId)

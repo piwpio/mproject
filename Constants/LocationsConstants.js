@@ -1,7 +1,5 @@
 var raw = {
     1: {
-        id: 1,
-        terrain: 'forest', // terrain type
         enemies: {
             wolf: {
                 level: 1
@@ -11,22 +9,20 @@ var raw = {
             left: 2,
         }
     },
+
     2: {
-        id: 2,
-        terrain: 'forest',
         enemies: {
             wolf: {
                 level: 2
             }
         },
         moves: {
-            left: 1,
-            right:3
+            left: 3,
+            right:1
         }
     },
+
     3: {
-        id: 3,
-        terrain: 'forest',
         moves: {
             right: 2,
         }
