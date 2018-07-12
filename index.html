@@ -20,6 +20,9 @@
                 });
             }
         });
+        socket.on('hero_response', function(r) {
+            console.log(r);
+        });
 
         socket.on('response_error', function(error) {
             console.log('response_error', error.message);

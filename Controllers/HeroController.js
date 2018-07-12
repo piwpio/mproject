@@ -7,8 +7,14 @@ module.exports = {
 };
 
 
+var ResponseController = require("./ResponseController");
 var Hero2 = function(socket)
 {
+    console.log(ResponseController.prototype);
+
+    ResponseController.call(this, 'hero_response', 'hero');
+
+    console.log(this.sendResponse);
     //TODO
     this._id = Math.round(Math.random() * 10);
     this._socket = socket;
@@ -37,6 +43,7 @@ var Hero2 = function(socket)
 
     return this;
 };
+Hero2.prototype = Object.create(ResponseController.prototype);
 
 //region Setters/Getters
 
@@ -82,25 +89,6 @@ Hero2.prototype.heroOnDisconnect = function()
     var Locations = module.parent.parent.exports.Locations;
     var location = Locations.getLocation(this._location);
     location.removeHeroFromLocation(this);
-};
-
-Hero2.prototype._setValue = function(field, value)
-{
-    this[field] = value;
-    if (this._response['h'] === undefined) {
-        this._response['h'] = {};
-    }
-    this._response['h'][field] = value;
-    this._isDirty = true;
-};
-
-Hero2.prototype.sendResponse = function()
-{
-    if (this._isDirty) {
-        this._socket.emit('response', this._response);
-        this._response = {};
-        this._isDirty = false;
-    }
 };
 
 Hero2.prototype.canHeroAction = function()
