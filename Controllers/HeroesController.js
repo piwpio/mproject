@@ -1,21 +1,3 @@
-var Instance = undefined;
-var init = function()
-{
-    if (Instance === undefined) {
-        Instance = new Heroes2();
-    }
-    return Instance;
-};
-var getInstance = function()
-{
-    return Instance;
-};
-module.exports = {
-    init,
-    getInstance
-};
-
-
 var Hero = require("./HeroController");
 
 Heroes2 = function()
@@ -57,4 +39,13 @@ Heroes2.prototype.debugShowHeroes = function()
         console.log("Hero: " + hero.getId(), "Location: " + hero.getLocation());
     }
     console.log("Total heroes: " + total);
+};
+
+
+var create = function()
+{
+    return new Heroes2();
+};
+module.exports = {
+    create,
 };

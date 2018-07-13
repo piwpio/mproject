@@ -21,13 +21,13 @@ app.get('/', function(req, res) {
 server.listen(3600);
 console.log("SERVER LISTENING");
 
-Heroes.init();
+var HeroesInstance = Heroes.create();
 Debug.init();
 Locations.init();
 var HeroResponseInstance = HeroResponse.create();
 
 module.exports = {
-    Heroes: Heroes.getInstance(),
+    Heroes: HeroesInstance,
     Locations: Locations.getInstance(),
     HeroResponse: HeroResponseInstance,
 };
@@ -42,7 +42,7 @@ setInterval(function() {
         }
 
         var heroResponse = HeroResponseInstance.getResponse(responseId);
-        var hero = Heroes.getInstance().getHero(HeroResponseInstance.getResponseOwner(responseId));
+        var hero = HeroesInstance.getHero(HeroResponseInstance.getResponseOwner(responseId));
         for (var key in heroResponse) {
             hero[key] = heroResponse[key];
         }
@@ -77,7 +77,6 @@ setInterval(function() {
 
 var io = require('socket.io')(server,{});
 io.sockets.on('connection', function(socket) {
-    var HeroesInstance = Heroes.getInstance();
     HeroesInstance.createHero(socket);
     HeroRoute.init(HeroesInstance.getHero(socket.getHeroId()));
     Debug.getInstance().addHeroDebug(socket);
