@@ -51,7 +51,7 @@ Location2.prototype._createEnemies = function(enemies)
     return a;
 };
 
-Location2.prototype.getHeroesOnLocationSockets = function(responseId)
+Location2.prototype.getHeroOnLocationSockets = function(responseId)
 {
     var HeroesInstance = module.parent.parent.exports.Heroes;
     console.log('BBB');

@@ -62,7 +62,7 @@ setInterval(function() {
         for (var key in locationResponses) {
             console.log(location.getResponse(key));
             if (!sockets.length) {
-                sockets = location.getHeroesOnLocationSockets();
+                sockets = location.getHeroOnLocationSockets();
             }
             location.broadcastResponse(key, sockets);
         }
