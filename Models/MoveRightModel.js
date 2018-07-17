@@ -6,21 +6,31 @@ var execute = function(hero)
     }
 
     var locationId = hero.getLocation();
-    var Locations = module.parent.parent.exports.Locations;
-    var currentLocation = Locations.getLocation(locationId);
+    var LocationsInstance = module.parent.parent.exports.Locations;
+    var currentLocation = LocationsInstance.getLocation(locationId);
+
     if (currentLocation.canGoRight()) {
         var newLocationId = currentLocation.getRightLocationId();
-        // var newLocation = Locations.getLocation(newLocationId);
-        var responseId = hero.createNewResponse();
-        hero.setLocation(newLocationId, responseId);
-        // currentLocation.removeHeroFromLocation(hero, 1);
-        // newLocation.addHeroToLocation(hero, 0);
-        hero.closeResponse(responseId);
+
+        hero.setLocation(newLocationId);
         hero.setLastHeroAction();
+        hero.sendResponse();
+
+        currentLocation.removeHeroFromLocation(hero.getId());
+        currentLocation.broadcastResponse(hero.getId(), {
+            hero_remove: [hero.getId(), 'right']
+        });
+
+        var newLocation = LocationsInstance.getLocation(newLocationId);
+        newLocation.addHeroToLocation(hero.getId());
+        newLocation.broadcastResponse(hero.getId(), {
+            hero_add: [hero.getId(), 'left']
+        });
 
     } else {
-        hero.emitError({message: 'cant go right'});
+        hero.emitError({message: 'cant go left'});
     }
+
 };
 
 module.exports = {

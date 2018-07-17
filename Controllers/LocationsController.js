@@ -6,6 +6,7 @@ var Locations2 = function()
     this._locations = {};
     var locationsRaw = LocationConstants.getAll();
     for (var locId in locationsRaw) {
+        locId = parseInt(locId);
         var location = locationsRaw[locId];
         this._locations[locId] = Location.create(
             locId,

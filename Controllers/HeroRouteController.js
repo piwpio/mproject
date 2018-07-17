@@ -12,9 +12,9 @@ var init = function(hero)
     socket.on('move_left',  function(){MoveLeftModel.execute(hero)});
     socket.on('move_right', function(){MoveRightModel.execute(hero)});
     //Hero chat
-    // socket.on('chat_message', function(d){ChatMessageModel.execute(hero, d.m)});
+    socket.on('chat_message', function(d){ChatMessageModel.execute(hero, d.m)});
     //Hero fight
-    // socket.on('fight_attack', function(d){FightAttackModel.execute(hero, d.eid, d.et)});
+    socket.on('fight_attack', function(d){FightAttackModel.execute(hero, d.eid, d.et)});
 };
 
 module.exports = {

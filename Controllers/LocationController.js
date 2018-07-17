@@ -9,11 +9,10 @@ module.exports = {
 
 var Enemy = require("./EnemyController");
 var EnemiesConstants = require("../Constants/EnemiesConstants");
-var ResponseController = require("./ResponseController");
 
 var Location2 = function(id, moves, enemies)
 {
-    ResponseController.call(this, 'location_response', 'location');
+    // ResponseController.call(this, 'location_response', 'location');
 
     this._id = id;
     this._moves = moves;
@@ -21,15 +20,15 @@ var Location2 = function(id, moves, enemies)
 
     this._heroesOnLocation = {};
 };
-Location2.prototype = Object.create(ResponseController.prototype);
+// Location2.prototype = Object.create(ResponseController.prototype);
 
 Location2.prototype.getId = function()  { return this._id };
 Location2.prototype.canGoLeft = function()   { return this._moves.left !== undefined };
 Location2.prototype.canGoRight = function()  { return this._moves.right !== undefined };
 Location2.prototype.getLeftLocationId = function()   { return this._moves.left; };
 Location2.prototype.getRightLocationId = function()  { return this._moves.right; };
-Location2.prototype.isHeroOnLocation = function(heroId) { return !!self._heroesOnLocation[heroId]; };
-Location2.prototype.getEnemy = function(enemyId) { return self.enemies[enemyId] || null; };
+Location2.prototype.isHeroOnLocation = function(heroId) { return !!this._heroesOnLocation[heroId]; };
+Location2.prototype.getEnemy = function(enemyId) { return this._enemies[enemyId] || null; };
 
 Location2.prototype._createEnemies = function(enemies)
 {
@@ -51,33 +50,19 @@ Location2.prototype._createEnemies = function(enemies)
     return a;
 };
 
-Location2.prototype.getHeroOnLocationSockets = function(responseId)
+Location2.prototype.addHeroToLocation = function(heroId)
 {
-    var HeroesInstance = module.parent.parent.exports.Heroes;
-    console.log('BBB');
-    var aa = [];
-    for (var heroId in this._heroesOnLocation) {
-        console.log(heroId);
-        aa.push(HeroesInstance.getHero(heroId).getSocket());
-    }
+    this._heroesOnLocation[heroId] = 1;
 };
 
-Location2.prototype.addHeroToLocation = function(responseId, hero, side)
+Location2.prototype.removeHeroFromLocation = function(heroId)
 {
-    this._heroesOnLocation[hero.getId()] = 1;
-    this.setResponseTriggeredBy(responseId, hero.getId());
-    this.responseAddKey(responseId, 'add_hero', [hero.getId(), side])
-};
-
-Location2.prototype.removeHeroFromLocation = function(responseId, hero, side)
-{
-    delete this._heroesOnLocation[hero.getId()];
-    this.responseAddKey(responseId, 'rm_hero', [hero.getId(), side])
+    delete this._heroesOnLocation[heroId];
 };
 
 Location2.prototype.getHeroOnLocation = function(heroId)
 {
-    if (self.isHeroOnLocation(heroId)) {
+    if (this.isHeroOnLocation(heroId)) {
         var HeroesInstance = module.parent.parent.exports.Heroes;
         HeroesInstance.getHero(heroId);
     } else {
@@ -85,42 +70,27 @@ Location2.prototype.getHeroOnLocation = function(heroId)
     }
 };
 
-Location2.prototype.heroChatMessage = function(hero, message)
+Location2.prototype.broadcastResponse = function(senderId, object)
 {
-    // var HeroesInstance = module.parent.parent.exports.Heroes;
-    // for (var heroId in self.heroesOnLocation) {
-    //     if (hero.getId() == heroId) {
-    //         continue;
-    //     }
-    //     HeroesInstance
-    //         .getHero(heroId)
-    //         .responseAddKey('chat', {
-    //             m: [hero.id, message]
-    //         })
-    //         .sendResponse();
-    // }
+    var HeroesInstance = module.parent.parent.exports.Heroes;
+    for (var heroId in this._heroesOnLocation) {
+        if (senderId == parseInt(heroId)) {
+            continue;
+        }
+        HeroesInstance.getHero(heroId).getSocket().emit('location_response', object);
+    }
 };
 
-Location2.prototype.broadcastEnemy = function(enemyId, hero)
+Location2.prototype.broadcastResponseAll = function(object)
 {
-    // var HeroesInstance = module.parent.parent.exports.Heroes;
-    // var enemy = self.getEnemy(enemyId);
-    // for (var heroId in self.heroesOnLocation) {
-    //     heroId = parseInt(heroId);
-    //     var r = {};
-    //     r[enemyId] = {
-    //         hp: enemy.getHp(),
-    //         et: 'm'
-    //     };
-    //     if (hero.getId() !== heroId) {
-    //         r[enemyId]['a'] = hero.getId();
-    //         HeroesInstance
-    //             .getHero(heroId)
-    //             .responseAddKey('enemy', r)
-    //             .sendResponse();
-    //     } else {
-    //         hero
-    //             .responseAddKey('enemy', r)
-    //     }
-    // }
+    this.broadcastResponse(0, object);
+};
+
+Location2.prototype.broadcastEnemy = function(enemyId)
+{
+    var enemy = this.getEnemy(enemyId);
+    var r = {};
+    r[enemyId] = enemy.getResponse();
+    this.broadcastResponseAll({enemy: r});
+    enemy.cleanResponse();
 };

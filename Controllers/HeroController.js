@@ -36,7 +36,7 @@ Hero2.prototype.getId = function()     {return this._id;};
 Hero2.prototype.getSocket = function() {return this._socket;};
 
 Hero2.prototype.getLocation = function()           {return this._location;};
-Hero2.prototype.setLocation = function(location)   {this._setValue('_location', location); return this;};
+Hero2.prototype.setLocation = function(v)   {this._setValue('_location', v); return this;};
 
 Hero2.prototype.getName = function() { return this._name;};
 Hero2.prototype.setName = function(v) { this._setValue('_name', v); return this;};
@@ -73,23 +73,23 @@ Hero2.prototype.heroOnDisconnect = function()
 {
     var Locations = module.parent.parent.exports.Locations;
     var location = Locations.getLocation(this._location);
-    location.removeHeroFromLocation(this);
+    location.removeHeroFromLocation(this.getId());
 };
 
 Hero2.prototype._setValue = function(field, value)
 {
     this[field] = value;
-    if (this._response['h'] === undefined) {
-        this._response['h'] = {};
+    if (this._response['hero'] === undefined) {
+        this._response['hero'] = {};
     }
-    this._response['h'][field] = value;
+    this._response['hero'][field] = value;
     this._isDirty = true;
 };
 
 Hero2.prototype.sendResponse = function()
 {
     if (this._isDirty) {
-        this._socket.emit('response', this._response);
+        this._socket.emit('hero_response', this._response);
         this._response = {};
         this._isDirty = false;
     }
@@ -124,10 +124,9 @@ Hero2.prototype.takeAttack = function(enemy)
 };
 
 //region DEBUG METHODS
-Hero2.prototype.emitError = function(message) {this.socket.emit('response_error', {message: message});};
+Hero2.prototype.emitError = function(message) {this.getSocket().emit('response_error', {message: message});};
 Hero2.prototype.whoAmI =    function() {console.log('Hero', this._id);};
 //endregion DEBUG METHODS
-
 
 
 var create = function(socket)

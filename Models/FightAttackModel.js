@@ -6,12 +6,12 @@ var execute = function(hero, enemyId, enemyType)
     }
 
     var locationId = hero.getLocation();
-    var Locations = module.parent.parent.exports.Locations;
-    var currentLocation = Locations.getLocation(locationId);
+    var LocationsInstance = module.parent.parent.exports.Locations;
+    var location = LocationsInstance.getLocation(locationId);
     if (enemyType === 'h') {
 
     } else {
-        var enemy = currentLocation.getEnemy(enemyId);
+        var enemy = location.getEnemy(enemyId);
         if (!enemy) {
             hero.emitError({message: 'no enemy with id ' + enemyId + ' on location ' + locationId});
             return;
@@ -33,14 +33,14 @@ var execute = function(hero, enemyId, enemyType)
                 var attackHeroes = enemy.getHeroesWhichAttacked();
                 var heroesOnLocationIds = [];
                 for (var hid in attackHeroes) {
-                    if (currentLocation.isHeroOnLocation(hid)){
+                    if (location.isHeroOnLocation(hid)){
                         heroesOnLocationIds.push(hid);
                         damageTotalByHeroesOnLocation = attackHeroes[hid];
                     }
                 }
                 for (hid in heroesOnLocationIds) {
                     var exp = Math.round((attackHeroes[hid]/damageTotalByHeroesOnLocation) * 100);
-                    var h = currentLocation.getHeroOnLocation(hid);
+                    var h = location.getHeroOnLocation(hid);
                     if (h) {
                         h.setExp(h.getExp() + exp);
                     }
@@ -57,7 +57,7 @@ var execute = function(hero, enemyId, enemyType)
             // }
         }
 
-        currentLocation.broadcastEnemy(enemyId, hero);
+        location.broadcastEnemy(enemyId, hero);
     }
 
     hero.setLastHeroAction();

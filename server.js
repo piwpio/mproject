@@ -35,5 +35,9 @@ io.sockets.on('connection', function(socket) {
     HEROROUTE.init(HeroesInstance.getHero(socket.getHeroId()));
     DEBUG.getInstance().addHeroDebug(socket);
     console.log("HERO " + socket.getHeroId() + " CONNECTED");
+
+    socket.on('disconnect', function() {
+
+    })
 });
 console.log("SOCKETS LISTENING");

@@ -22,8 +22,25 @@ var Enemy2 = function(name, level, hp, attack, defence, attackSpeed, exp)
     this._alive = true;
     this._maxHp = hp * level;
 
+    //RESPONSE
+    this._response = {};
+
     this._heroesLastAttackTs = {};
     this._heroesAttackDamage = {};
+};
+
+Enemy2.prototype._setValue = function(field, value)
+{
+    this[field] = value;
+    this._response[field] = value;
+};
+Enemy2.prototype.getResponse = function()
+{
+    return this._response;
+};
+Enemy2.prototype.cleanResponse = function()
+{
+    this._response = {};
 };
 
 Enemy2.prototype.getName =          function(){ return this._name };
@@ -33,6 +50,8 @@ Enemy2.prototype.getMaxHp =         function(){ return this._maxHp };
 Enemy2.prototype.getAttack =        function(){ return this._attack };
 Enemy2.prototype.getDefence =       function(){ return this._defence };
 Enemy2.prototype.getAttackSpeed =   function(){ return this._attackSpeed };
+
+Enemy2.prototype.setHp = function(v) {this._setValue('_hp', v); return this;};
 
 Enemy2.prototype.isAlive =          function() {return this._alive;};
 
@@ -50,7 +69,7 @@ Enemy2.prototype.takeAttack = function(hero)
     if (heroAttack > this._defence) {
         var damage = heroAttack - this._defence;
         var damageDealt = this._hp - damage > 0 ? damage : this._hp;
-        this._hp -= damage;
+        this.setHp(this._hp - damage);
         this._heroesAttackDamage[heroId] += damageDealt;
 
     } else if (heroAttack === this._defence) {

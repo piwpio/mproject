@@ -12,16 +12,18 @@
             $('#loaded').show();
             socket.emit('init_hero')
         });
-        socket.on('response', function(r) {
+        socket.on('chat_response', function(r) {
             console.log(r);
-            if (r['chat'] !== undefined) {
-                $.each(r['chat'], function(index, data) {
-                    $("#chat").append("<span style='display:block;'><b>" + data[0] + ": </b>" + data[1] + "</span>");
-                });
-            }
+
         });
         socket.on('hero_response', function(r) {
             console.log(r);
+        });
+        socket.on('location_response', function(r) {
+            console.log(r);
+            if (r['chat'] !== undefined) {
+                $("#chat").append("<span style='display:block;'><b>" + r['chat'][0] + ": </b>" + r['chat'][1] + "</span>");
+            }
         });
 
         socket.on('response_error', function(error) {

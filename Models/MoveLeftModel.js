@@ -6,19 +6,26 @@ var execute = function(hero)
     }
 
     var locationId = hero.getLocation();
-    var Locations = module.parent.parent.exports.Locations;
-    var currentLocation = Locations.getLocation(locationId);
+    var LocationsInstance = module.parent.parent.exports.Locations;
+    var currentLocation = LocationsInstance.getLocation(locationId);
+
     if (currentLocation.canGoLeft()) {
         var newLocationId = currentLocation.getLeftLocationId();
-        // var newLocation = Locations.getLocation(newLocationId);
-        var responseId = hero.createNewResponse();
-        hero.setLocation(newLocationId, responseId);
-        //send heroes on current location info, that hero just moved from this location
-        // currentLocation.removeHeroFromLocation(hero, 0);
-        //send heroes on new location info, that hero just moved to this location
-        // newLocation.addHeroToLocation(hero, 1);
-        hero.closeResponse(responseId);
+
+        hero.setLocation(newLocationId);
         hero.setLastHeroAction();
+        hero.sendResponse();
+
+        currentLocation.removeHeroFromLocation(hero.getId());
+        currentLocation.broadcastResponse(hero.getId(), {
+            hero_remove: [hero.getId(), 'left']
+        });
+
+        var newLocation = LocationsInstance.getLocation(newLocationId);
+        newLocation.addHeroToLocation(hero.getId());
+        newLocation.broadcastResponse(hero.getId(), {
+            hero_add: [hero.getId(), 'right']
+        });
 
     } else {
         hero.emitError({message: 'cant go left'});
