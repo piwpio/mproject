@@ -1,4 +1,4 @@
-var Hero = require("./HeroController");
+var HERO = require("./HeroController");
 
 Heroes2 = function()
 {
@@ -13,7 +13,7 @@ Heroes2.prototype.removeHero =  function(heroId) { delete this.heroes[heroId]; }
 Heroes2.prototype.createHero = function(socket)
 {
     //CONNECT HERO INIT ETC
-    var hero = Hero.create(socket);
+    var hero = HERO.create(socket);
 
     socket._heroId = hero.getId();
     socket.getHeroId = function() {return this._heroId};
