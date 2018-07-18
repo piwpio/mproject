@@ -6,14 +6,13 @@ Heroes2 = function()
 };
 
 Heroes2.prototype.getHero =     function(id) { return this.heroes[id]; };
-Heroes2.prototype.getHeroes =   function() { return this.heroes; };
 Heroes2.prototype.addHero =     function(hero) { this.heroes[hero.getId()] = hero; };
 Heroes2.prototype.removeHero =  function(heroId) { delete this.heroes[heroId]; };
 
-Heroes2.prototype.createHero = function(socket)
+Heroes2.prototype.createHero = function(socket, heroId)
 {
     //CONNECT HERO INIT ETC
-    var hero = HERO.create(socket);
+    var hero = HERO.create(socket, heroId);
 
     socket._heroId = hero.getId();
     socket.getHeroId = function() {return this._heroId};

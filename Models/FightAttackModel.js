@@ -1,9 +1,9 @@
 var execute = function(hero, enemyId, enemyType)
 {
-    if (!hero.canHeroAction()) {
-        hero.emitError({message: 'cant do action yet'});
-        return;
-    }
+    // if (!hero.canHeroAction()) {
+    //     hero.emitError({message: 'cant do action yet'});
+    //     return;
+    // }
 
     var locationId = hero.getLocation();
     var LocationsInstance = module.parent.parent.exports.Locations;
@@ -25,17 +25,18 @@ var execute = function(hero, enemyId, enemyType)
             //hero attack first
             enemy.takeAttack(hero);
             if (enemy.isAlive()) {
-                console.log('enemy still alive');
+                // console.log('enemy still alive');
                 hero.takeAttack(enemy);
             } else {
                 //rewards
                 var damageTotalByHeroesOnLocation = 0;
                 var attackHeroes = enemy.getHeroesWhichAttacked();
                 var heroesOnLocationIds = [];
-                for (var hid in attackHeroes) {
+                var hid;
+                for (hid in attackHeroes) {
                     if (location.isHeroOnLocation(hid)){
                         heroesOnLocationIds.push(hid);
-                        damageTotalByHeroesOnLocation = attackHeroes[hid];
+                        damageTotalByHeroesOnLocation += attackHeroes[hid];
                     }
                 }
                 for (hid in heroesOnLocationIds) {

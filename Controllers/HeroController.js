@@ -1,8 +1,9 @@
 
-var Hero2 = function(socket)
+var Hero2 = function(socket, id)
 {
     //TODO
-    this._id = Math.round(Math.random() * 10);
+    // this._id = Math.round(Math.random() * 10);
+    this._id = id;
     this._socket = socket;
     this._lastActionTs = Date.now() - 10000;
 
@@ -129,9 +130,9 @@ Hero2.prototype.whoAmI =    function() {console.log('Hero', this._id);};
 //endregion DEBUG METHODS
 
 
-var create = function(socket)
+var create = function(socket,id)
 {
-    return new Hero2(socket);
+    return new Hero2(socket, id);
 };
 module.exports = {
     create: create

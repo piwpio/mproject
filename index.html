@@ -56,6 +56,10 @@
             socket.emit('debug_hero_who');
         }
 
+        window.intervalId = setInterval(function() {
+            attack();
+        }, 1000);
+
         $(function() {
             $("#message-form").on("submit", function(e) {
                 e.preventDefault();
