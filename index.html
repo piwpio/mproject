@@ -56,19 +56,20 @@
             socket.emit('debug_hero_who');
         }
 
-        window.intervalId = setInterval(function() {
-            attack();
-        }, 1000);
+        // window.intervalId = setInterval(function() {
+        //     attack();
+        // }, 1000);
 
         $(function() {
             $("#message-form").on("submit", function(e) {
                 e.preventDefault();
-                var message = $("#message-input").val();
+                var messageInput = $("#message-input");
+                var message = messageInput.val();
                 socket.emit('chat_message', {m: message});
                 $("#chat").append(
                     "<span style='display:block'><b>me: </b>" + message + "</span>"
                 );
-                $("#message-input").val("");
+                messageInput.val("");
                 return false;
             });
         });
@@ -92,7 +93,7 @@
     <div id="chat" style="position: absolute; background: mintcream; height: 200px; width:100%; top: 200px;">
         <form id="message-form">
             <label for="message-input"></label>
-            <input id="message-input" style="width:100%; position: absolute; bottom: 0">
+            <input id="message-input" autocomplete="off" style="width:100%; position: absolute; bottom: 0">
         </form>
     </div>
 </div>

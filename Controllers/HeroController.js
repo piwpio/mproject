@@ -26,6 +26,7 @@ var Hero2 = function(socket, id)
     this._response = {};
 
     //CONTROL VARIABLES
+    this._alive = true;
     this._lastActionTs = null;
 
     return this;
@@ -67,6 +68,8 @@ Hero2.prototype.setAttackSpeed = function(v) { this._setValue('_attackSpeed', v)
 
 Hero2.prototype.getWeight = function() { return this._weight;};
 Hero2.prototype.setWeight = function(v) { this._setValue('_weight', v); return this; };
+
+Hero2.prototype.isAlive = function() { return this._alive; };
 
 //endregion Setters/Getters
 
@@ -116,11 +119,18 @@ Hero2.prototype.isAlive = function()
 
 Hero2.prototype.takeAttack = function(enemy)
 {
-    var damage = enemy.getAttack();
-    if (damage > this._defence) {
-        this._setValue('hp', this._hp - (damage - this._defence));
-    } else if (damage === this._defence) {
+    var enemyAttack = enemy.getAttack();
+    if (enemyAttack > this._defence) {
+        var damage = enemyAttack - this._defence;
+        var damageDealt = this._hp - damage > 0 ? damage : this._hp;
+        this.setHp(this._hp - damageDealt);
+    } else if (enemyAttack === this._defence) {
         //luck,
+    }
+
+    //dead
+    if (this._hp <= 0) {
+        this._alive = false;
     }
 };
 

@@ -64,7 +64,7 @@ Location2.prototype.getHeroOnLocation = function(heroId)
 {
     if (this.isHeroOnLocation(heroId)) {
         var HeroesInstance = module.parent.parent.exports.Heroes;
-        HeroesInstance.getHero(heroId);
+        return HeroesInstance.getHero(heroId);
     } else {
         return null;
     }

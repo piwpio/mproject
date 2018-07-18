@@ -1,4 +1,5 @@
 var raw = {
+    99999: {},
     1: {
         enemies: {
             wolf: {
@@ -13,7 +14,8 @@ var raw = {
     2: {
         enemies: {
             wolf: {
-                level: 2
+                level: 2,
+                attack_speed: 100
             }
         },
         moves: {
@@ -30,5 +32,6 @@ var raw = {
 };
 
 module.exports = {
-    getAll: function() { return raw; }
+    getAll: function() { return raw; },
+    getDeadId: function() { return 99999; }
 };

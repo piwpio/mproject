@@ -50,6 +50,7 @@ Enemy2.prototype.getMaxHp =         function(){ return this._maxHp };
 Enemy2.prototype.getAttack =        function(){ return this._attack };
 Enemy2.prototype.getDefence =       function(){ return this._defence };
 Enemy2.prototype.getAttackSpeed =   function(){ return this._attackSpeed };
+Enemy2.prototype.getExp =           function(){ return this._exp };
 
 Enemy2.prototype.setHp = function(v) {this._setValue('_hp', v); return this;};
 

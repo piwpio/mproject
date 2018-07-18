@@ -44,11 +44,11 @@ io.sockets.on('connection', function(socket) {
 });
 console.log("SOCKETS LISTENING");
 
-setInterval(function() {
-    var memory = process.memoryUsage();
-    var status = "";
-    for (var key in memory) {
-        status += key + "=" + (Math.round((memory[key] / 1024 / 1024) * 100) / 100) + "MB\t";
-    }
-    console.log(status);
-}, 3000);
+// setInterval(function() {
+//     var memory = process.memoryUsage();
+//     var status = "";
+//     for (var key in memory) {
+//         status += key + "=" + (Math.round((memory[key] / 1024 / 1024) * 100) / 100) + "MB\t";
+//     }
+//     console.log(status);
+// }, 3000);
