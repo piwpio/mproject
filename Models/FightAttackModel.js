@@ -1,5 +1,3 @@
-var LocationConstants = require("../Constants/LocationsConstants");
-
 var execute = function(hero, enemyId, enemyType)
 {
     if (!hero.canHeroAttackAction()) {
