@@ -1,18 +1,30 @@
-var Queue = function()
+var EnemyQueue = function()
 {
     this._queue = {};
 };
 
-Queue.prototype.addToQueue = function(enemyId)
+EnemyQueue.prototype.addToQueue = function(enemyId)
 {
     this._queue[enemyId] = 1;
     return this;
 };
 
-Queue.prototype.removeFromQueue = function(enemyId)
+EnemyQueue.prototype.removeFromQueue = function(enemyId)
 {
     delete this._queue[enemyId];
     return this;
 };
 
-module.exports = Queue;
+EnemyQueue.prototype.isEnemyInQueue = function(enemyId)
+{
+    return !!this._queue[enemyId];
+};
+
+EnemyQueue.prototype.getQueue = function()
+{
+    return this._queue;
+};
+
+module.exports = {
+    create: function() { return new EnemyQueue(); }
+};

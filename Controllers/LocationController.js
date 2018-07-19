@@ -6,7 +6,7 @@ var Location2 = function(id, moves, enemies)
     this._moves = moves;
 
     this._enemiesOnLocation = {};
-    for (var enemyId of enemies) {
+    for (let enemyId of enemies) {
         this._enemiesOnLocation[enemyId] = 1;
     }
 
@@ -23,6 +23,14 @@ Location2.prototype.getRightLocationId = function()  { return this._moves.right;
 Location2.prototype.isHeroOnLocation = function(heroId)     { return !!this._heroesOnLocation[heroId]; };
 Location2.prototype.isEnemyOnLocation = function(enemyId)   { return !!this._enemiesOnLocation[enemyId]; };
 
+Location2.prototype.initEnemies = function()
+{
+    var EnemiesInstance = module.parent.parent.exports.Enemies;
+    for (let enemyId in this._enemiesOnLocation) {
+        EnemiesInstance.getEnemy(enemyId).setLocation(this._id);
+    }
+};
+
 Location2.prototype.addHeroToLocation = function(heroId)
 {
     this._heroesOnLocation[heroId] = 1;
@@ -36,7 +44,7 @@ Location2.prototype.removeHeroFromLocation = function(heroId)
 Location2.prototype.getHeroOnLocation = function(heroId)
 {
     if (this.isHeroOnLocation(heroId)) {
-        var HeroesInstance = module.parent.parent.exports.Heroes;
+        let HeroesInstance = module.parent.parent.exports.Heroes;
         return HeroesInstance.getHero(heroId);
     } else {
         return null;
@@ -56,7 +64,7 @@ Location2.prototype.removeEnemyFromLocation = function(enemyId)
 Location2.prototype.getEnemyOnLocation = function(enemyId)
 {
     if (this.isEnemyOnLocation(enemyId)) {
-        var EnemiesInstance = module.parent.parent.exports.Enemies;
+        let EnemiesInstance = module.parent.parent.exports.Enemies;
         return EnemiesInstance.getEnemy(enemyId);
     } else {
         return null;

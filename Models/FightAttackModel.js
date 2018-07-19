@@ -2,14 +2,14 @@ var LocationConstants = require("../Constants/LocationsConstants");
 
 var execute = function(hero, enemyId, enemyType)
 {
-    if (!hero.canHeroAction()) {
-        hero.emitError({message: 'cant do action yet'});
+    if (!hero.canHeroAttackAction()) {
+        hero.emitError({message: 'cant do attack action yet'});
         return;
     }
 
-    var locationId = hero.getLocation();
-    var LocationsInstance = module.parent.parent.exports.Locations;
-    var location = LocationsInstance.getLocation(locationId);
+    let locationId = hero.getLocation();
+    let LocationsInstance = module.parent.parent.exports.Locations;
+    let location = LocationsInstance.getLocation(locationId);
     if (enemyType === 'h') {
 
     } else {
@@ -23,105 +23,34 @@ var execute = function(hero, enemyId, enemyType)
             return;
         }
 
-        if (hero.getAttackSpeed() >= enemy.getAttackSpeed()) {
-            // console.log('hero attack first');
-            enemy.takeAttack(hero);
-            if (enemy.isAlive()) {
-                hero.takeAttack(enemy);
-                if (!hero.isAlive()) {
-                    hero.setLocation(LocationConstants.getDeadId());
-                    hero.sendResponse();
+        let EnemyQueueInstance = module.parent.parent.exports.EnemiesQueue;
 
-                    location.removeHeroFromLocation(hero.getId());
-                    location.broadcastResponse(hero.getId(), {
-                        hero_remove: [hero.getId(), 'dead']
-                    });
-
-                    let deadLocation = LocationsInstance.getLocation(LocationConstants.getDeadId());
-                    deadLocation.addHeroToLocation(hero.getId());
-                    deadLocation.broadcastResponse(hero.getId(), {
-                        hero_add: [hero.getId(), 'dead']
-                    });
-
-                } else {
-                    hero.setLastHeroAction();
-                    hero.sendResponse();
+        if (!EnemyQueueInstance.isEnemyInQueue(enemyId)) {
+            EnemyQueueInstance.addToQueue(enemyId);
+        }
+        enemy.takeAttack(hero);
+        if (!enemy.isAlive()) {
+            let damageTotalByHeroesOnLocation = 0;
+            let attackHeroes = enemy.getHeroesWhichAttackedDamage();
+            let heroesOnLocationIds = [];
+            let hid;
+            for (hid in attackHeroes) {
+                if (location.isHeroOnLocation(hid)){
+                    heroesOnLocationIds.push(hid);
+                    damageTotalByHeroesOnLocation += attackHeroes[hid];
                 }
-                location.broadcastEnemy(enemyId, hero);
-
-            } else {
-                //rewards
-                let damageTotalByHeroesOnLocation = 0;
-                let attackHeroes = enemy.getHeroesWhichAttacked();
-                let heroesOnLocationIds = [];
-                let hid;
-                for (hid in attackHeroes) {
-                    if (location.isHeroOnLocation(hid)){
-                        heroesOnLocationIds.push(hid);
-                        damageTotalByHeroesOnLocation += attackHeroes[hid];
-                    }
-                }
-                for (hid of heroesOnLocationIds) {
-                    let exp = Math.floor((attackHeroes[hid]/damageTotalByHeroesOnLocation) * enemy.getExp());
-                    let h = location.getHeroOnLocation(hid);
-                    if (h) {
-                        h.addExp(exp);
-                        h.sendResponse();
-                    }
-                }
-                location.broadcastEnemy(enemyId, hero);
             }
-
-        } else {
-            // console.log('enemy attack first');
-            hero.takeAttack(enemy);
-            if (hero.isAlive()) {
-                enemy.takeAttack(hero);
-                if (!enemy.isAlive()) {
-                    let damageTotalByHeroesOnLocation = 0;
-                    let attackHeroes = enemy.getHeroesWhichAttacked();
-                    let heroesOnLocationIds = [];
-                    let hid;
-                    for (hid in attackHeroes) {
-                        if (location.isHeroOnLocation(hid)) {
-                            heroesOnLocationIds.push(hid);
-                            damageTotalByHeroesOnLocation += attackHeroes[hid];
-                        }
-                    }
-                    for (hid of heroesOnLocationIds) {
-                        let exp = Math.floor((attackHeroes[hid]/damageTotalByHeroesOnLocation) * enemy.getExp());
-                        let h = location.getHeroOnLocation(hid);
-                        if (h) {
-                            h.addExp(exp);
-                            h.sendResponse();
-                        }
-                    }
-
-                } else {
-                    hero.sendResponse();
+            for (hid of heroesOnLocationIds) {
+                let exp = Math.floor((attackHeroes[hid]/damageTotalByHeroesOnLocation) * enemy.getExp());
+                let h = location.getHeroOnLocation(hid);
+                if (h) {
+                    h.addExp(exp);
+                    h.sendResponse();
                 }
-                location.broadcastEnemy(enemyId, hero);
-                hero.setLastHeroAction();
-
-            } else {
-                //hero dead
-                hero.setLocation(LocationConstants.getDeadId());
-                hero.sendResponse();
-
-                location.removeHeroFromLocation(hero.getId());
-                location.broadcastResponse(hero.getId(), {
-                    hero_remove: [hero.getId(), 'dead']
-                });
-
-                let deadLocation = LocationsInstance.getLocation(LocationConstants.getDeadId());
-                deadLocation.addHeroToLocation(hero.getId());
-                deadLocation.broadcastResponse(hero.getId(), {
-                    hero_add: [hero.getId(), 'dead']
-                });
-
-                location.broadcastEnemy(enemyId, hero);
             }
         }
+        location.broadcastEnemy(enemyId, hero);
+        hero.setLastHeroAttackAction();
     }
 };
 

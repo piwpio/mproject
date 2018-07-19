@@ -3,6 +3,7 @@ var Locations = require("./Controllers/LocationsController");
 var Enemies = require("./Controllers/EnemiesController");
 var Debug = require("./Controllers/DebugController");
 var HeroRoute = require("./Controllers/HeroRouteController");
+var EnemiesQueue = require("./Queues/EnemiesQueue");
 
 var express = require("express");
 var app = express();
@@ -30,13 +31,17 @@ console.log("SERVER LISTENING");
 var HeroesInstance = Heroes.create();
 var EnemiesInstance = Enemies.create();
 var LocationsInstance = Locations.create();
-Debug.init();
+var EnemiesQueueInstance = EnemiesQueue.create();
+var DebugInstance = Debug.create();
 
 module.exports = {
     Heroes: HeroesInstance,
     Enemies: EnemiesInstance,
-    Locations: LocationsInstance
+    Locations: LocationsInstance,
+    EnemiesQueue: EnemiesQueueInstance
 };
+
+LocationsInstance.setAllEnemiesLocationId();
 
 var io = require('socket.io')(server,{});
 var heroNewId = 0;
@@ -44,7 +49,7 @@ io.sockets.on('connection', function(socket) {
     heroNewId++;
     HeroesInstance.createHero(socket, heroNewId);
     HeroRoute.init(HeroesInstance.getHero(socket.getHeroId()));
-    Debug.getInstance().addHeroDebug(socket);
+    DebugInstance.addHeroDebug(socket);
     console.log("HERO " + socket.getHeroId() + " CONNECTED");
 
     socket.on('disconnect', function() {
@@ -52,6 +57,16 @@ io.sockets.on('connection', function(socket) {
     })
 });
 console.log("SOCKETS LISTENING");
+
+//enemy moves cron
+setInterval(function() {
+    let queue = EnemiesQueueInstance.getQueue();
+    for (let enemyId in queue) {
+        let enemy = EnemiesInstance.getEnemy(enemyId);
+        enemy.cronAction();
+    }
+}, 1000);
+
 
 // setInterval(function() {
 //     var memory = process.memoryUsage();

@@ -16,7 +16,7 @@ var Enemies = function()
             enemy.hp            || enemiesBase[enemy.base].hp,
             enemy.attack        || enemiesBase[enemy.base].attack,
             enemy.defence       || enemiesBase[enemy.base].defence,
-            enemy.attack_speed  || enemiesBase[enemy.base].attack_speed,
+            enemy.attack_lag    || enemiesBase[enemy.base].attack_lag,
             enemy.exp           || enemiesBase[enemy.base].exp
         );
     }

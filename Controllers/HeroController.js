@@ -1,3 +1,4 @@
+var LocationConstants = require("../Constants/LocationsConstants");
 
 var Hero2 = function(socket, id)
 {
@@ -27,7 +28,8 @@ var Hero2 = function(socket, id)
 
     //CONTROL VARIABLES
     this._alive = true;
-    this._lastActionTs = null;
+    this._lastActionTs = 0;
+    this._lastAttackActionTs = 0;
 
     return this;
 };
@@ -64,7 +66,7 @@ Hero2.prototype.getSpeed = function() { return this._speed;};
 Hero2.prototype.setSpeed = function(v) { this._setValue('_speed', v); return this; };
 
 Hero2.prototype.getAttackSpeed = function() { return this._attackSpeed;};
-Hero2.prototype.setAttackSpeed = function(v) { this._setValue('_attackSpeed', v); return this; };
+Hero2.prototype.setAttackSpeed = function(v) { this._setValue('_attackLag', v); return this; };
 
 Hero2.prototype.getWeight = function() { return this._weight;};
 Hero2.prototype.setWeight = function(v) { this._setValue('_weight', v); return this; };
@@ -112,6 +114,19 @@ Hero2.prototype.setLastHeroAction = function()
     this._lastActionTs = Date.now();
 };
 
+Hero2.prototype.setLastHeroAttackAction = function()
+{
+    this._lastAttackActionTs = Date.now();
+};
+
+Hero2.prototype.canHeroAttackAction = function()
+{
+    var now = Date.now();
+    var diff = this._weight - this._attackSpeed;
+    var speedWeight = diff > 1 ? diff * 1000  : 1000;
+    return this._lastAttackActionTs + speedWeight <= now;
+};
+
 Hero2.prototype.isAlive = function()
 {
     return this._hp > 0;
@@ -130,8 +145,30 @@ Hero2.prototype.takeAttack = function(enemy)
 
     //dead
     if (this._hp <= 0) {
-        this._alive = false;
+        this._heroIsDeadAction();
     }
+};
+
+Hero2.prototype._heroIsDeadAction = function()
+{
+    console.log('hero ' + this.getId() + ' is dead');
+    let LocationsInstance = module.parent.parent.exports.Locations;
+    this._alive = false;
+
+    let location = LocationsInstance.getLocation(this.getLocation());
+    location.removeHeroFromLocation(this.getId());
+    location.broadcastResponse(this.getId(), {
+        hero_remove: [this.getId(), 'dead']
+    });
+
+    let deadLocation = LocationsInstance.getLocation(LocationConstants.getDeadId());
+    deadLocation.addHeroToLocation(this.getId());
+    deadLocation.broadcastResponse(this.getId(), {
+        hero_add: [this.getId(), 'dead']
+    });
+
+    this.setLocation(LocationConstants.getDeadId());
+    this.sendResponse();
 };
 
 //region DEBUG METHODS

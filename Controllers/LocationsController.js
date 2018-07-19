@@ -4,10 +4,10 @@ var LocationConstants = require("../Constants/LocationsConstants");
 var Locations2 = function()
 {
     this._locations = {};
-    var locationsRaw = LocationConstants.getAll();
+    let locationsRaw = LocationConstants.getAll();
     for (var locId in locationsRaw) {
         locId = parseInt(locId);
-        var location = locationsRaw[locId];
+        let location = locationsRaw[locId];
         this._locations[locId] = Location.create(
             locId,
             location.moves     || {},
@@ -17,12 +17,20 @@ var Locations2 = function()
 };
 
 Locations2.prototype.getLocation = function(locId)  {return this._locations[locId];};
+Locations2.prototype.setAllEnemiesLocationId = function(locId)
+{
+    for (let locationId in this._locations) {
+        let location = this._locations[locationId];
+        location.initEnemies();
+    }
+};
 
 
 var create = function()
 {
     return new Locations2();
 };
+
 module.exports = {
     create,
 };
