@@ -1,14 +1,15 @@
-var create = function(name, lvl, hp, attack, defence, attackSpeed, exp)
+var create = function(id, name, lvl, hp, attack, defence, attackSpeed, exp)
 {
-    return new Enemy2(name, lvl, hp, attack, defence, attackSpeed, exp);
+    return new Enemy2(id, name, lvl, hp, attack, defence, attackSpeed, exp);
 };
 module.exports = {
     create: create
 };
 
 
-var Enemy2 = function(name, level, hp, attack, defence, attackSpeed, exp)
+var Enemy2 = function(id, name, level, hp, attack, defence, attackSpeed, exp)
 {
+    this._id = id;
     this._name = name;
     this._level = level;
     this._hp = hp * level;

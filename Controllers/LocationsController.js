@@ -11,12 +11,11 @@ var Locations2 = function()
         this._locations[locId] = Location.create(
             locId,
             location.moves     || {},
-            location.enemies   || {}
+            location.enemies   || []
         );
     }
 };
 
-Locations2.prototype.getLocations = function()      {return this._locations;};
 Locations2.prototype.getLocation = function(locId)  {return this._locations[locId];};
 
 

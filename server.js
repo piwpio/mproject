@@ -1,7 +1,8 @@
-var HEROES = require("./Controllers/HeroesController");
-var LOCATIONS = require("./Controllers/LocationsController");
-var DEBUG = require("./Controllers/DebugController");
-var HEROROUTE = require("./Controllers/HeroRouteController");
+var Heroes = require("./Controllers/HeroesController");
+var Locations = require("./Controllers/LocationsController");
+var Enemies = require("./Controllers/EnemiesController");
+var Debug = require("./Controllers/DebugController");
+var HeroRoute = require("./Controllers/HeroRouteController");
 
 var express = require("express");
 var app = express();
@@ -26,12 +27,14 @@ app.get('/', function(req, res) {
 server.listen(3600);
 console.log("SERVER LISTENING");
 
-var HeroesInstance = HEROES.create();
-var LocationsInstance = LOCATIONS.create();
-DEBUG.init();
+var HeroesInstance = Heroes.create();
+var EnemiesInstance = Enemies.create();
+var LocationsInstance = Locations.create();
+Debug.init();
 
 module.exports = {
     Heroes: HeroesInstance,
+    Enemies: EnemiesInstance,
     Locations: LocationsInstance
 };
 
@@ -40,8 +43,8 @@ var heroNewId = 0;
 io.sockets.on('connection', function(socket) {
     heroNewId++;
     HeroesInstance.createHero(socket, heroNewId);
-    HEROROUTE.init(HeroesInstance.getHero(socket.getHeroId()));
-    DEBUG.getInstance().addHeroDebug(socket);
+    HeroRoute.init(HeroesInstance.getHero(socket.getHeroId()));
+    Debug.getInstance().addHeroDebug(socket);
     console.log("HERO " + socket.getHeroId() + " CONNECTED");
 
     socket.on('disconnect', function() {

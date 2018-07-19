@@ -1,23 +1,14 @@
 var raw = {
     99999: {},
     1: {
-        enemies: {
-            wolf: {
-                level: 1
-            }
-        },
+        enemies: [1],
         moves: {
             left: 2,
         }
     },
 
     2: {
-        enemies: {
-            wolf: {
-                level: 2,
-                attack_speed: 100
-            }
-        },
+        enemies: [2],
         moves: {
             left: 3,
             right:1

@@ -13,7 +13,7 @@ var execute = function(hero, enemyId, enemyType)
     if (enemyType === 'h') {
 
     } else {
-        var enemy = location.getEnemy(enemyId);
+        var enemy = location.getEnemyOnLocation(enemyId);
         if (!enemy) {
             hero.emitError({message: 'no enemy with id ' + enemyId + ' on location ' + locationId});
             return;

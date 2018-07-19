@@ -31,9 +31,12 @@ function right()
     socket.emit('move_right');
 }
 
-function attack()
+function attack(enemyId)
 {
-    socket.emit('fight_attack', {eid: 0, et: 'm'});
+    if (!enemyId) {
+        return;
+    }
+    socket.emit('fight_attack', {eid: enemyId, et: 'm'});
 }
 
 function showHeroes()
@@ -52,6 +55,11 @@ function who()
 // }, 1000);
 
 $(function() {
+    $("#attack-button").on('click', function() {
+        var enemyId = parseInt($("#enemy-id-input").val());
+        attack(enemyId);
+    });
+
     $("#message-form").on("submit", function(e) {
         e.preventDefault();
         var messageInput = $("#message-input");

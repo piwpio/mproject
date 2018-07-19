@@ -13,7 +13,10 @@
     </div>
     <div id="loaded" style="display: none; width:100%; height:100%; background:yellow; position:absolute; top:0; left: 0; right:0; bottom:0;">
         <button onclick="left()" style="position: absolute; left: 0; top: 50px;">LEFT</button>
-        <button onclick="attack()" style="position: absolute; left: 50%; margin-left:-20px; top: 50px;">ATTACK</button>
+        <div style="position: absolute; left: 50%; margin-left:-50px; top: 50px;">
+            <button id="attack-button">ATTACK</button>
+            <input id="enemy-id-input" style="width:30px">
+        </div>
         <button onclick="right()" style="position: absolute; right:0; top: 50px;">RIGHT</button>
         <div style="position: absolute; top: 100px;">
             <button onclick="who()">WHO AM I</button>
