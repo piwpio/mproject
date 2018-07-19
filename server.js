@@ -8,15 +8,28 @@ var app = express();
 var server = require("http").Server(app);
 console.log("SERVER STARTED");
 
-app.get('/socketio.js', function(req, res) {
-    res.sendFile(__dirname + "/socketio.js");
+//game
+app.get('/js/socketio.js', function(req, res) {
+    res.sendFile(__dirname + "/web/js/socketio.js");
 });
-app.get('/jquery.js', function(req, res) {
-    res.sendFile(__dirname + "/jquery.js");
+app.get('/js/jquery.js', function(req, res) {
+    res.sendFile(__dirname + "/web/js/jquery.js");
+});
+app.get('/js/game.js', function(req, res) {
+    res.sendFile(__dirname + "/web/js/game.js");
 });
 app.get('/', function(req, res) {
-    res.sendFile(__dirname + "/index.html");
+    res.sendFile(__dirname + "/web/game.html");
 });
+
+//devtools
+app.get('/js/dev.js', function(req, res) {
+    res.sendFile(__dirname + "/web/js/dev.js");
+});
+app.get('/dev/', function(req, res) {
+    res.sendFile(__dirname + "/web/dev.html");
+});
+
 server.listen(3600);
 console.log("SERVER LISTENING");
 
