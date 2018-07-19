@@ -50,9 +50,17 @@ function who()
     socket.emit('debug_hero_who');
 }
 
-// window.intervalId = setInterval(function() {
-//     attack();
+// var asd = -1;
+// setTimeout(function() {
+//     console.log('asdasdasd');
+//     asd = setInterval(function() {
+//         attack(1);
+//     }, 50);
 // }, 1000);
+// setTimeout(function() {
+//     clearInterval(asd);
+// }, 6000);
+
 
 $(function() {
     $("#attack-button").on('click', function() {
