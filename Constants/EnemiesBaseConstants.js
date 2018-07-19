@@ -4,7 +4,7 @@ var raw = {
         hp: 10,
         attack: 2,
         defence: 1,
-        attack_lag: 1,
+        attack_lag: 4,
         exp: 10
     }
 };

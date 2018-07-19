@@ -114,11 +114,6 @@ Enemy2.prototype._removeFirstAttacker = function()
     this._heroesAttackedOrder.shift();
 };
 
-Enemy2.prototype._canEnemyAttackAction = function()
-{
-    return this._lastAttackActionTs + (this._attackLag * 1000) <= Date.now();
-};
-
 Enemy2.prototype.cronAction = function()
 {
     // console.log('enemy cron');
@@ -176,9 +171,14 @@ Enemy2.prototype.cronAction = function()
 
 };
 
+Enemy2.prototype._canEnemyAttackAction = function()
+{
+    return this._lastAttackActionTs <= Date.now();
+};
+
 Enemy2.prototype.setLastEnemyAttackAction = function()
 {
-    this._lastAttackActionTs = Date.now();
+    this._lastAttackActionTs = Date.now() + (this._attackLag * 1000);
 };
 
 Enemy2.prototype.respawnAction = function()

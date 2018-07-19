@@ -48,7 +48,7 @@ var execute = function(hero, enemyId, enemyType)
             }
         }
         location.broadcastEnemy(enemyId, hero);
-        hero.setLastHeroAttackAction();
+        hero.setNextHeroAttackAction();
     }
 };
 

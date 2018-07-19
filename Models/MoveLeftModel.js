@@ -1,7 +1,7 @@
 var execute = function(hero)
 {
-    if (!hero.canHeroAction()) {
-        hero.emitError({message: 'cant do action yet'});
+    if (!hero.canHeroMoveAction()) {
+        hero.emitError({message: 'cant do move action yet'});
         return;
     }
 
@@ -13,7 +13,7 @@ var execute = function(hero)
         var newLocationId = currentLocation.getLeftLocationId();
 
         hero.setLocation(newLocationId);
-        hero.setLastHeroAction();
+        hero.setNextHeroMoveAction();
         hero.sendResponse();
 
         currentLocation.removeHeroFromLocation(hero.getId());

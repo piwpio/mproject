@@ -6,7 +6,6 @@ var Hero2 = function(socket, id)
     // this._id = Math.round(Math.random() * 10);
     this._id = id;
     this._socket = socket;
-    this._lastActionTs = Date.now() - 10000;
 
     //TODO
     this._location = 1;
@@ -19,7 +18,7 @@ var Hero2 = function(socket, id)
     this._attack = 3;
     this._defence = 1;
     this._speed = 1;
-    this._attackSpeed = 1;
+    this._attackSpeed = 3;
     this._weight = 3;
 
     //RESPONSE
@@ -28,8 +27,8 @@ var Hero2 = function(socket, id)
 
     //CONTROL VARIABLES
     this._alive = true;
-    this._lastActionTs = 0;
-    this._lastAttackActionTs = 0;
+    this._nextMoveActionTs = 0;
+    this._nextAttackActionTs = 0;
 
     return this;
 };
@@ -101,30 +100,28 @@ Hero2.prototype.sendResponse = function()
     }
 };
 
-Hero2.prototype.canHeroAction = function()
+Hero2.prototype.canHeroMoveAction = function()
 {
-    var now = Date.now();
+    return this._nextMoveActionTs <= Date.now();
+};
+
+Hero2.prototype.setNextHeroMoveAction = function()
+{
     var diff = this._weight - this._speed;
     var speedWeight = diff > 1 ? diff * 1000  : 1000;
-    return this._lastActionTs + speedWeight <= now;
-};
-
-Hero2.prototype.setLastHeroAction = function()
-{
-    this._lastActionTs = Date.now();
-};
-
-Hero2.prototype.setLastHeroAttackAction = function()
-{
-    this._lastAttackActionTs = Date.now();
+    this._nextMoveActionTs = Date.now() + speedWeight;
 };
 
 Hero2.prototype.canHeroAttackAction = function()
 {
-    var now = Date.now();
+    return this._nextAttackActionTs <= Date.now();
+};
+
+Hero2.prototype.setNextHeroAttackAction = function()
+{
     var diff = this._weight - this._attackSpeed;
     var speedWeight = diff > 1 ? diff * 1000  : 1000;
-    return this._lastAttackActionTs + speedWeight <= now;
+    this._nextAttackActionTs = Date.now() + speedWeight;
 };
 
 Hero2.prototype.isAlive = function()
