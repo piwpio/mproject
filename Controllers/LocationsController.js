@@ -17,7 +17,7 @@ var Locations2 = function()
 };
 
 Locations2.prototype.getLocation = function(locId)  {return this._locations[locId];};
-Locations2.prototype.setAllEnemiesLocationId = function(locId)
+Locations2.prototype.setAllEnemiesLocationId = function()
 {
     for (let locationId in this._locations) {
         let location = this._locations[locationId];
