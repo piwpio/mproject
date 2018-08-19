@@ -5,7 +5,7 @@ var Locations2 = function()
 {
     this._locations = {};
     let locationsRaw = LocationConstants.getAll();
-    for (var locId in locationsRaw) {
+    for (let locId in locationsRaw) {
         locId = parseInt(locId);
         let location = locationsRaw[locId];
         this._locations[locId] = Location.create(
