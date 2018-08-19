@@ -15,10 +15,10 @@ var Location2 = function(id, moves, enemies)
 // Location2.prototype = Object.create(ResponseController.prototype);
 
 Location2.prototype.getId = function()  { return this._id };
-Location2.prototype.canGoLeft = function()   { return this._moves.left !== undefined };
-Location2.prototype.canGoRight = function()  { return this._moves.right !== undefined };
-Location2.prototype.getLeftLocationId = function()   { return this._moves.left; };
-Location2.prototype.getRightLocationId = function()  { return this._moves.right; };
+Location2.prototype.canGoEast = function()   { return this._moves.east !== undefined };
+Location2.prototype.canGoWest = function()  { return this._moves.west !== undefined };
+Location2.prototype.getEastLocationId = function()   { return this._moves.east; };
+Location2.prototype.getWestLocationId = function()  { return this._moves.west; };
 
 Location2.prototype.isHeroOnLocation = function(heroId)     { return !!this._heroesOnLocation[heroId]; };
 Location2.prototype.isEnemyOnLocation = function(enemyId)   { return !!this._enemiesOnLocation[enemyId]; };

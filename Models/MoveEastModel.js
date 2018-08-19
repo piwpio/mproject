@@ -9,8 +9,8 @@ var execute = function(hero)
     var LocationsInstance = module.parent.parent.exports.Locations;
     var currentLocation = LocationsInstance.getLocation(locationId);
 
-    if (currentLocation.canGoRight()) {
-        var newLocationId = currentLocation.getRightLocationId();
+    if (currentLocation.canGoEast()) {
+        var newLocationId = currentLocation.getEastLocationId();
 
         hero.setLocation(newLocationId);
         hero.setNextHeroMoveAction();
@@ -18,13 +18,13 @@ var execute = function(hero)
 
         currentLocation.removeHeroFromLocation(hero.getId());
         currentLocation.broadcastResponse(hero.getId(), {
-            hero_remove: [hero.getId(), 'right']
+            hero_remove: [hero.getId(), 'left']
         });
 
         var newLocation = LocationsInstance.getLocation(newLocationId);
         newLocation.addHeroToLocation(hero.getId());
         newLocation.broadcastResponse(hero.getId(), {
-            hero_add: [hero.getId(), 'left']
+            hero_add: [hero.getId(), 'right']
         });
 
     } else {
