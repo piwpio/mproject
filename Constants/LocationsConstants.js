@@ -11,7 +11,7 @@ var raw = {
         enemies: [2],
         moves: {
             east: 3,
-            west:1
+            west: 1
         }
     },
 
