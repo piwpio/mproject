@@ -84,10 +84,10 @@ Hero2.prototype.heroOnDisconnect = function()
 Hero2.prototype._setValue = function(field, value)
 {
     this[field] = value;
-    if (this._response['hero'] === undefined) {
-        this._response['hero'] = {};
+    if (this._response === null) {
+        this._response = {};
     }
-    this._response['hero'][field] = value;
+    this._response[field] = value;
     this._isDirty = true;
 };
 
@@ -95,7 +95,7 @@ Hero2.prototype.sendResponse = function()
 {
     if (this._isDirty) {
         this._socket.emit('hero_response', this._response);
-        this._response = {};
+        this._response = null;
         this._isDirty = false;
     }
 };
