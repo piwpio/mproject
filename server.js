@@ -3,36 +3,23 @@ var Locations = require("./Controllers/LocationsController");
 var Enemies = require("./Controllers/EnemiesController");
 var Debug = require("./Controllers/DebugController");
 var HeroRoute = require("./Controllers/HeroRouteController");
+var StaticData = require("./Controllers/StaticDataController");
 var EnemiesQueue = require("./Queues/EnemiesQueue");
 
 var express = require("express");
 var app = express();
 var server = require("http").Server(app);
 console.log("SERVER STARTED");
-console.log("SERVER STARTED");
-
-//game
-app.get('/js/socketio.js', function(req, res) {
-    res.sendFile(__dirname + "/web/js/socketio.js");
-});
-app.get('/js/jquery.js', function(req, res) {
-    res.sendFile(__dirname + "/web/js/jquery.js");
-});
-app.get('/js/game.js', function(req, res) {
-    res.sendFile(__dirname + "/web/js/game.js");
-});
-app.get('/', function(req, res) {
-    res.sendFile(__dirname + "/web/index.html");
-});
 
 server.listen(3600);
 console.log("SERVER LISTENING");
 
-var HeroesInstance = Heroes.create();
-var EnemiesInstance = Enemies.create();
-var LocationsInstance = Locations.create();
-var EnemiesQueueInstance = EnemiesQueue.create();
-var DebugInstance = Debug.create();
+let StaticDataInstance = StaticData.create();
+let HeroesInstance = Heroes.create();
+let EnemiesInstance = Enemies.create();
+let LocationsInstance = Locations.create();
+let EnemiesQueueInstance = EnemiesQueue.create();
+let DebugInstance = Debug.create();
 
 module.exports = {
     Heroes: HeroesInstance,
@@ -46,6 +33,16 @@ LocationsInstance.setAllEnemiesLocationId();
 var io = require('socket.io')(server,{});
 var heroNewId = 0;
 io.sockets.on('connection', function(socket) {
+    //static data
+    socket.on('checksum', function() {
+        console.log('333');
+        socket.emit('checksum', StaticDataInstance.getControlCode());
+    });
+    socket.on('static_data', function() {
+        console.log('111');
+        socket.emit('static_data', StaticDataInstance.getStaticData());
+    });
+
     heroNewId++;
     HeroesInstance.createHero(socket, heroNewId);
     HeroRoute.init(HeroesInstance.getHero(socket.getHeroId()));
@@ -54,7 +51,7 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('disconnect', function() {
 
-    })
+    });
 });
 console.log("SOCKETS LISTENING");
 
