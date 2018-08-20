@@ -35,39 +35,39 @@ var Hero2 = function(socket, id)
 
 //region Setters/Getters
 
-Hero2.prototype.getId = function()     {return this._id;};
-Hero2.prototype.getSocket = function() {return this._socket;};
+Hero2.prototype.getId = function()     { return this._id; };
+Hero2.prototype.getSocket = function() { return this._socket; };
 
-Hero2.prototype.getLocation = function()           {return this._location;};
-Hero2.prototype.setLocation = function(v)   {this._setValue('_location', v); return this;};
+Hero2.prototype.getLocation = function()    { return this._location;};
+Hero2.prototype.setLocation = function(v)   { this._setValue('_location', v); return this; };
 
-Hero2.prototype.getName = function() { return this._name;};
-Hero2.prototype.setName = function(v) { this._setValue('_name', v); return this;};
+Hero2.prototype.getName = function()    { return this._name; };
+Hero2.prototype.setName = function(v)   { this._setValue('_name', v); return this; };
 
-Hero2.prototype.getLevel = function() { return this._level;};
-Hero2.prototype.setLevel = function(v) { this._setValue('_level', v); return this;};
+Hero2.prototype.getLevel = function()   { return this._level; };
+Hero2.prototype.setLevel = function(v)  { this._setValue('_level', v); return this; };
 
-Hero2.prototype.getExp = function() { return this._exp;};
-Hero2.prototype.setExp = function(v) { this._setValue('_exp', v); return this;};
-Hero2.prototype.addExp = function(v) { this._setValue('_exp', this._exp + v); return this;};
+Hero2.prototype.getExp = function()     { return this._exp; };
+Hero2.prototype.setExp = function(v)    { this._setValue('_exp', v); return this; };
+Hero2.prototype.addExp = function(v)    { this._setValue('_exp', this._exp + v); return this; };
 
-Hero2.prototype.getHp = function() { return this._hp > 0 ? this._hp : 0;};
-Hero2.prototype.setHp = function(v) { this._setValue('_hp', (v > 0 ? v : 0)); return this;};
-Hero2.prototype.addHp = function(v) { this._setValue('_hp', this._hp + v); return this;};
+Hero2.prototype.getHp = function()  { return this._hp > 0 ? this._hp : 0; };
+Hero2.prototype.setHp = function(v) { this._setValue('_hp', (v > 0 ? v : 0)); return this; };
+Hero2.prototype.addHp = function(v) { this._setValue('_hp', this._hp + v); return this; };
 
-Hero2.prototype.getAttack = function() { return this._attack;};
+Hero2.prototype.getAttack = function()  { return this._attack; };
 Hero2.prototype.setAttack = function(v) { this._setValue('_attack', v); return this; };
 
-Hero2.prototype.getDefence = function() { return this._defence;};
-Hero2.prototype.setDefence = function(v) { this._setValue('_defence', v); return this; };
+Hero2.prototype.getDefence = function()     { return this._defence; };
+Hero2.prototype.setDefence = function(v)    { this._setValue('_defence', v); return this; };
 
-Hero2.prototype.getSpeed = function() { return this._speed;};
-Hero2.prototype.setSpeed = function(v) { this._setValue('_speed', v); return this; };
+Hero2.prototype.getSpeed = function()   { return this._speed; };
+Hero2.prototype.setSpeed = function(v)  { this._setValue('_speed', v); return this; };
 
-Hero2.prototype.getAttackSpeed = function() { return this._attackSpeed;};
-Hero2.prototype.setAttackSpeed = function(v) { this._setValue('_attackLag', v); return this; };
+Hero2.prototype.getAttackSpeed = function()     { return this._attackSpeed; };
+Hero2.prototype.setAttackSpeed = function(v)    { this._setValue('_attackLag', v); return this; };
 
-Hero2.prototype.getWeight = function() { return this._weight;};
+Hero2.prototype.getWeight = function()  { return this._weight; };
 Hero2.prototype.setWeight = function(v) { this._setValue('_weight', v); return this; };
 
 Hero2.prototype.isAlive = function() { return this._alive; };
