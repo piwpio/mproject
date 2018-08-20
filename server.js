@@ -35,11 +35,9 @@ var heroNewId = 0;
 io.sockets.on('connection', function(socket) {
     //static data
     socket.on('checksum', function() {
-        console.log('333');
         socket.emit('checksum', StaticDataInstance.getControlCode());
     });
     socket.on('static_data', function() {
-        console.log('111');
         socket.emit('static_data', StaticDataInstance.getStaticData());
     });
 

@@ -1,6 +1,6 @@
-var LocationConstants = require("../Constants/LocationsConstants");
+let LocationConstants = require("../Constants/LocationsConstants");
 
-var Hero2 = function(socket, id)
+let Hero2 = function(socket, id)
 {
     //TODO
     // this._id = Math.round(Math.random() * 10);
@@ -74,16 +74,42 @@ Hero2.prototype.isAlive = function() { return this._alive; };
 
 //endregion Setters/Getters
 
+Hero2.prototype.addInitToResponse = function()
+{
+    let fields = [
+        '_location',
+        '_name',
+        '_level',
+        '_exp',
+        '_hp',
+        '_attack',
+        '_defence',
+        '_speed',
+        '_attackSpeed',
+        '_weight'
+    ];
+    for (let i = 0; i < fields.length; i++) {
+        let field = fields[i];
+        this._addFieldToResponse(field, this[field]);
+    }
+};
+
 Hero2.prototype.heroOnDisconnect = function()
 {
-    var Locations = module.parent.parent.exports.Locations;
-    var location = Locations.getLocation(this._location);
+    let Locations = module.parent.parent.exports.Locations;
+    let location = Locations.getLocation(this._location);
     location.removeHeroFromLocation(this.getId());
 };
 
 Hero2.prototype._setValue = function(field, value)
 {
     this[field] = value;
+    this._addFieldToResponse(field, value);
+
+};
+
+Hero2.prototype._addFieldToResponse = function(field, value)
+{
     if (this._response === null) {
         this._response = {};
     }
@@ -107,8 +133,8 @@ Hero2.prototype.canHeroMoveAction = function()
 
 Hero2.prototype.setNextHeroMoveAction = function()
 {
-    var diff = this._weight - this._speed;
-    var speedWeight = diff > 1 ? diff * 1000  : 1000;
+    let diff = this._weight - this._speed;
+    let speedWeight = diff > 1 ? diff * 1000  : 1000;
     this._nextMoveActionTs = Date.now() + speedWeight;
 };
 
@@ -119,8 +145,8 @@ Hero2.prototype.canHeroAttackAction = function()
 
 Hero2.prototype.setNextHeroAttackAction = function()
 {
-    var diff = this._weight - this._attackSpeed;
-    var speedWeight = diff > 1 ? diff * 1000  : 1000;
+    let diff = this._weight - this._attackSpeed;
+    let speedWeight = diff > 1 ? diff * 1000  : 1000;
     this._nextAttackActionTs = Date.now() + speedWeight;
 };
 
@@ -131,10 +157,10 @@ Hero2.prototype.isAlive = function()
 
 Hero2.prototype.takeAttack = function(enemy)
 {
-    var enemyAttack = enemy.getAttack();
+    let enemyAttack = enemy.getAttack();
     if (enemyAttack > this._defence) {
-        var damage = enemyAttack - this._defence;
-        var damageDealt = this._hp - damage > 0 ? damage : this._hp;
+        let damage = enemyAttack - this._defence;
+        let damageDealt = this._hp - damage > 0 ? damage : this._hp;
         this.setHp(this._hp - damageDealt);
     } else if (enemyAttack === this._defence) {
         //luck,
@@ -174,7 +200,7 @@ Hero2.prototype.whoAmI =    function() {console.log('Hero', this._id);};
 //endregion DEBUG METHODS
 
 
-var create = function(socket,id)
+let create = function(socket,id)
 {
     return new Hero2(socket, id);
 };

@@ -4,6 +4,7 @@ var execute = function(hero)
     var LocationsInstance = module.parent.parent.exports.Locations;
     var location = LocationsInstance.getLocation(locationId);
 
+    hero.addInitToResponse();
     hero.setLocation(location.getId());
     location.addHeroToLocation(hero.getId());
     hero.sendResponse();
