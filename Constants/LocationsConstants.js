@@ -3,21 +3,21 @@ var raw = {
     1: {
         enemies: [1],
         moves: {
-            east: 2,
+            west: 2,
         }
     },
 
     2: {
         enemies: [2],
         moves: {
-            east: 3,
-            west: 1
+            west: 3,
+            east: 1
         }
     },
 
     3: {
         moves: {
-            west: 2,
+            east: 2,
         }
     }
 };

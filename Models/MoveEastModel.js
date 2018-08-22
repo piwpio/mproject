@@ -18,17 +18,17 @@ var execute = function(hero)
 
         currentLocation.removeHeroFromLocation(hero.getId());
         currentLocation.broadcastResponse(hero.getId(), {
-            hero_remove: [hero.getId(), 'left']
+            hero_remove: [hero.getId(), 'east']
         });
 
         var newLocation = LocationsInstance.getLocation(newLocationId);
         newLocation.addHeroToLocation(hero.getId());
         newLocation.broadcastResponse(hero.getId(), {
-            hero_add: [hero.getId(), 'right']
+            hero_add: [hero.getId(), 'west']
         });
 
     } else {
-        hero.emitError({message: 'cant go left'});
+        hero.emitError({message: 'cant go east'});
     }
 
 };
