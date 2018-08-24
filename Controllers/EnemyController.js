@@ -75,7 +75,8 @@ Enemy2.prototype.setHp =        function(v) { this._setValue('_hp', v); return t
 
 Enemy2.prototype.isAlive =          function() {return this._alive;};
 
-Enemy2.prototype.canRespawn = function() {
+Enemy2.prototype.canRespawn = function()
+{
     return this.getRespTime() <= Date.now();
 };
 
