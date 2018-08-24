@@ -11,6 +11,7 @@ var Enemies = function()
         var enemy = enemiesRaw[enemyId];
         this._enemies[enemyId] = Enemy.create(
             enemyId,
+            enemy.base,
             enemy.name          || enemy.base,
             enemy.level         || enemiesBase[enemy.base].level,
             enemy.hp            || enemiesBase[enemy.base].hp,

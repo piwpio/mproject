@@ -7,9 +7,10 @@ module.exports = {
 };
 
 
-var Enemy2 = function(id, name, level, hp, attack, defence, attackLag, exp)
+var Enemy2 = function(id, base, name, level, hp, attack, defence, attackLag, exp)
 {
     this._id = id;
+    this._base = base;
     this._location = null;
     this._name = name;
     this._level = level;
@@ -45,6 +46,15 @@ Enemy2.prototype.getResponse = function()
 Enemy2.prototype.cleanResponse = function()
 {
     this._response = {};
+};
+
+Enemy2.prototype.getEnemyViewForOtherHero = function()
+{
+    return {
+        id: this._id,
+        base: this._base,
+        name: this._name
+    }
 };
 
 Enemy2.prototype.getId =            function(){ return this._id };

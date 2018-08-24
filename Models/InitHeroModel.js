@@ -11,6 +11,8 @@ var execute = function(hero)
     location.broadcastResponse(hero.getId(), {
         hero_add: [hero.getId(), 'login']
     });
+
+    hero.emitCustomResponse('new_location_response', location.getHeroNewLocationObject(hero.getId()));
 };
 
 module.exports = {

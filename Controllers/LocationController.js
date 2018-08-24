@@ -71,6 +71,29 @@ Location2.prototype.getEnemyOnLocation = function(enemyId)
     }
 };
 
+Location2.prototype.getHeroNewLocationObject = function(senderId)
+{
+    let HeroesInstance = module.parent.parent.exports.Heroes;
+    let heroes = [];
+    for (let heroId in this._heroesOnLocation) {
+        heroId = parseInt(heroId);
+        if (senderId !== heroId) {
+            heroes.push(HeroesInstance.getHero(heroId).getHeroViewForOtherHero());
+        }
+    }
+
+    let EnemiesInstance = module.parent.parent.exports.Enemies;
+    let enemies = [];
+    for (let enemyId in this._enemiesOnLocation) {
+        enemies.push(EnemiesInstance.getEnemy(enemyId).getEnemyViewForOtherHero());
+    }
+    return {
+        id: this._id,
+        heroes: heroes,
+        enemies: enemies
+    }
+};
+
 Location2.prototype.broadcastResponse = function(senderId, object)
 {
     var HeroesInstance = module.parent.parent.exports.Heroes;

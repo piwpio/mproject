@@ -126,6 +126,19 @@ Hero2.prototype.sendResponse = function()
     }
 };
 
+Hero2.prototype.emitCustomResponse = function(emitKey, response)
+{
+    this._socket.emit(emitKey, response)
+};
+
+Hero2.prototype.getHeroViewForOtherHero = function()
+{
+    return {
+        id: this._id,
+        name: this._name,
+    }
+};
+
 Hero2.prototype.canHeroMoveAction = function()
 {
     return this._nextMoveActionTs <= Date.now();
