@@ -94,14 +94,15 @@ Location2.prototype.getHeroNewLocationObject = function(senderId)
     }
 };
 
-Location2.prototype.broadcastResponse = function(senderId, object)
+Location2.prototype.broadcastResponse = function(senderId, object, emitKey)
 {
-    var HeroesInstance = module.parent.parent.exports.Heroes;
+    emitKey = emitKey || 'location_response';
+    let HeroesInstance = module.parent.parent.exports.Heroes;
     for (var heroId in this._heroesOnLocation) {
         if (senderId == parseInt(heroId)) {
             continue;
         }
-        HeroesInstance.getHero(heroId).getSocket().emit('location_response', object);
+        HeroesInstance.getHero(heroId).getSocket().emit(emitKey, object);
     }
 };
 
@@ -112,13 +113,18 @@ Location2.prototype.broadcastResponseAll = function(object)
 
 Location2.prototype.broadcastEnemy = function(enemyId)
 {
-    var enemy = this.getEnemyOnLocation(enemyId);
+    let enemy = this.getEnemyOnLocation(enemyId);
     if (enemy) {
         var r = {};
         r[enemyId] = enemy.getResponse();
         this.broadcastResponseAll({enemy: r});
         enemy.cleanResponse();
     }
+};
+
+Location2.prototype.emitCustomResponse = function(emitKey, senderId, object)
+{
+
 };
 
 
