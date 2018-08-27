@@ -5,12 +5,12 @@ var execute = function(hero)
         return;
     }
 
-    var locationId = hero.getLocation();
-    var LocationsInstance = module.parent.parent.exports.Locations;
-    var currentLocation = LocationsInstance.getLocation(locationId);
+    let locationId = hero.getLocation();
+    let LocationsInstance = module.parent.parent.exports.Locations;
+    let currentLocation = LocationsInstance.getLocation(locationId);
 
     if (currentLocation.canGoWest()) {
-        var newLocationId = currentLocation.getWestLocationId();
+        let newLocationId = currentLocation.getWestLocationId();
 
         hero.setLocation(newLocationId);
         hero.setNextHeroMoveAction();
@@ -18,13 +18,19 @@ var execute = function(hero)
 
         currentLocation.removeHeroFromLocation(hero.getId());
         currentLocation.broadcastResponse(hero.getId(), {
-            hero_remove: [hero.getId(), 'west']
+            hero_remove: {
+                id: hero.getId(),
+                side: 'west'
+            }
         });
 
-        var newLocation = LocationsInstance.getLocation(newLocationId);
+        let newLocation = LocationsInstance.getLocation(newLocationId);
         newLocation.addHeroToLocation(hero.getId());
         newLocation.broadcastResponse(hero.getId(), {
-            hero_add: [hero.getId(), 'east']
+            hero_add: {
+                hero: hero.getHeroViewForOtherHero(),
+                side: 'east'
+            }
         });
 
         hero.emitCustomResponse('new_location_response', newLocation.getLocationForNewHeroObject(hero.getId()));

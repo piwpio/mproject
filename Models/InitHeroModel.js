@@ -9,7 +9,10 @@ var execute = function(hero)
     location.addHeroToLocation(hero.getId());
     hero.sendResponse();
     location.broadcastResponse(hero.getId(), {
-        hero_add: [hero.getId(), 'login']
+        hero_add: {
+            hero: hero.getHeroViewForOtherHero(),
+            side: 'login'
+        }
     });
 
     hero.emitCustomResponse('new_location_response', location.getLocationForNewHeroObject(hero.getId()));

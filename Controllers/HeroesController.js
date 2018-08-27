@@ -11,16 +11,15 @@ Heroes2.prototype.removeHero =  function(heroId) { delete this.heroes[heroId]; }
 
 Heroes2.prototype.createHero = function(socket, heroId)
 {
-    //CONNECT HERO INIT ETC
+    //NOTE CONNECT HERO INIT ETC
     var hero = HERO.create(socket, heroId);
 
     socket._heroId = hero.getId();
     socket.getHeroId = function() {return this._heroId};
 
     this.addHero(hero);
-    socket.emit('connected');
 
-    //DISCONNECT
+    //NOTE DISCONNECT
     var self = this;
     socket.on('disconnect', function() {
         self.removeHero(socket.getHeroId());

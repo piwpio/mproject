@@ -1,3 +1,5 @@
+let GlobalConstants = require("../Constants/GlobalVariablesConstatns");
+
 var Location2 = function(id, moves, enemies)
 {
     // ResponseController.call(this, 'location_response', 'location');
@@ -24,6 +26,8 @@ Location2.prototype.getWestLocationId = function()  { return this._moves.west; }
 
 Location2.prototype.isHeroOnLocation = function(heroId)     { return !!this._heroesOnLocation[heroId]; };
 Location2.prototype.isEnemyOnLocation = function(enemyId)   { return !!this._enemiesOnLocation[enemyId]; };
+
+Location2.prototype.canEnemyMoveToLocation = function() { return this._enemyShowQueue.length <= GlobalConstants.maxEnemiesOnLocation; };
 
 Location2.prototype.initEnemies = function()
 {
@@ -87,14 +91,8 @@ Location2.prototype.getLocationForNewHeroObject = function(senderId)
 {
     let HeroesInstance = module.parent.parent.exports.Heroes;
     let heroes = [];
-    for (let i = 0; i < this._heroesShowQueue; i++) {
+    for (let i = 0; i < this._heroesShowQueue.length; i++) {
         let heroId = this._heroesShowQueue[i];
-        if (senderId !== heroId) {
-            heroes.push(HeroesInstance.getEnemy(heroId).getHeroViewForOtherHero());
-        }
-    }
-    for (let heroId in this._heroesOnLocation) {
-        heroId = parseInt(heroId);
         if (senderId !== heroId) {
             heroes.push(HeroesInstance.getHero(heroId).getHeroViewForOtherHero());
         }
@@ -102,8 +100,8 @@ Location2.prototype.getLocationForNewHeroObject = function(senderId)
 
     let EnemiesInstance = module.parent.parent.exports.Enemies;
     let enemies = [];
-    for (let i = 0; i < this._enemyShowQueue; i++) {
-        let enemyId = this._enemyShowQueue[i];
+    for (var j = 0; j < this._enemyShowQueue.length; j++) {
+        let enemyId = this._enemyShowQueue[j];
         enemies.push(EnemiesInstance.getEnemy(enemyId).getEnemyViewForOtherHero());
     }
     return {

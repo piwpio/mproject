@@ -1,4 +1,5 @@
 let LocationConstants = require("../Constants/LocationsConstants");
+let GlobalConstants = require("../Constants/GlobalVariablesConstatns");
 
 let Hero2 = function(socket, id)
 {
@@ -98,7 +99,13 @@ Hero2.prototype.heroOnDisconnect = function()
 {
     let Locations = module.parent.parent.exports.Locations;
     let location = Locations.getLocation(this._location);
-    location.removeHeroFromLocation(this.getId());
+    location.removeHeroFromLocation(this._id);
+    location.broadcastResponse(this._id, {
+        hero_remove: {
+            id: this._id,
+            side: 'logout'
+        }
+    });
 };
 
 Hero2.prototype._setValue = function(field, value)
@@ -141,25 +148,31 @@ Hero2.prototype.getHeroViewForOtherHero = function()
 
 Hero2.prototype.canHeroMoveAction = function()
 {
+    if (GlobalConstants.disableHeroMoveLag) {
+        return true
+    }
     return this._nextMoveActionTs <= Date.now();
 };
 
 Hero2.prototype.setNextHeroMoveAction = function()
 {
     let diff = this._weight - this._speed;
-    let speedWeight = diff > 1 ? diff * 1000  : 1000;
+    let speedWeight = diff > 1 ? diff * 1000  : GlobalConstants.heroMoveMinMiliseconds;
     this._nextMoveActionTs = Date.now() + speedWeight;
 };
 
 Hero2.prototype.canHeroAttackAction = function()
 {
+    if (GlobalConstants.disableHeroAttackLag) {
+        return true
+    }
     return this._nextAttackActionTs <= Date.now();
 };
 
 Hero2.prototype.setNextHeroAttackAction = function()
 {
     let diff = this._weight - this._attackSpeed;
-    let speedWeight = diff > 1 ? diff * 1000  : 1000;
+    let speedWeight = diff > 1 ? diff * 1000  : GlobalConstants.heroAttackMinMiliseconds;
     this._nextAttackActionTs = Date.now() + speedWeight;
 };
 
@@ -187,24 +200,30 @@ Hero2.prototype.takeAttack = function(enemy)
 
 Hero2.prototype._heroIsDeadAction = function()
 {
-    console.log('hero ' + this.getId() + ' is dead');
+    console.log('hero ' + this._id + ' is dead');
     let LocationsInstance = module.parent.parent.exports.Locations;
     this._alive = false;
 
-    let location = LocationsInstance.getLocation(this.getLocation());
-    location.removeHeroFromLocation(this.getId());
-    location.broadcastResponse(this.getId(), {
-        hero_remove: [this.getId(), 'dead']
+    let location = LocationsInstance.getLocation(this._location);
+    location.removeHeroFromLocation(this._id);
+    location.broadcastResponse(this._id, {
+        hero_remove: {
+            id: this._id,
+            side: 'dead'
+        }
     });
 
     let deadLocation = LocationsInstance.getLocation(LocationConstants.getDeadId());
-    deadLocation.addHeroToLocation(this.getId());
-    deadLocation.broadcastResponse(this.getId(), {
-        hero_add: [this.getId(), 'dead']
+    deadLocation.addHeroToLocation(this._id);
+    deadLocation.broadcastResponse(this._id, {
+        hero_add: {
+            hero: this.getHeroViewForOtherHero(),
+            side: 'dead'
+        }
     });
-
     this.setLocation(LocationConstants.getDeadId());
     this.sendResponse();
+    this.emitCustomResponse('new_location_response', deadLocation.getLocationForNewHeroObject(this._id));
 };
 
 //region DEBUG METHODS

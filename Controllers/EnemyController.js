@@ -1,19 +1,20 @@
-var create = function(id, base, name, lvl, hp, attack, defence, attackSpeed, exp)
+var create = function(id, base, name, lvl, coward, hp, attack, defence, attackSpeed, exp,)
 {
-    return new Enemy2(id, base, name, lvl, hp, attack, defence, attackSpeed, exp);
+    return new Enemy2(id, base, name, lvl, coward, hp, attack, defence, attackSpeed, exp);
 };
 module.exports = {
     create: create
 };
 
 
-var Enemy2 = function(id, base, name, level, hp, attack, defence, attackLag, exp)
+var Enemy2 = function(id, base, name, level, coward, hp, attack, defence, attackLag, exp)
 {
     this._id = id;
     this._base = base;
     this._location = null;
     this._name = name;
     this._level = level;
+    this._coward = coward;
     this._hp = hp * level;
     this._attack = attack * level;
     this._defence = defence * level;
@@ -125,23 +126,75 @@ Enemy2.prototype._removeFirstAttacker = function()
     this._heroesAttackedOrder.shift();
 };
 
+Enemy2.prototype.shouldRunAway = function()
+{
+    let hpPercent = Math.ceil((this._hp / this._baseHp) * 100);
+    return this._coward && hpPercent < this._coward
+};
+
 Enemy2.prototype.cronAction = function()
 {
-    // console.log('enemy cron');
+    let EnemyQueueInstance = module.parent.parent.exports.EnemiesQueue;
+
+    //NOTE check respawn
     if (!this.isAlive()) {
         // console.log('r ', Date.now(), this._respTime, Date.now() >= this._respTime);
         // console.log('check if enemy can respawn');
         if (this.canRespawn()) {
-            console.log('enemy respawn');
-            let LocationsInstance = module.parent.parent.exports.Locations;
-            let location = LocationsInstance.getLocation(this._location);
-
-            let EnemyQueueInstance = module.parent.parent.exports.EnemiesQueue;
+            // console.log('enemy respawn');
             EnemyQueueInstance.removeFromQueue(this._id);
             this.respawnAction();
         }
-        // check respawn
-    } else if (this._canEnemyAttackAction()) {
+
+        return;
+    }
+
+    let LocationsInstance = module.parent.parent.exports.Locations;
+    let location = LocationsInstance.getLocation(this._location);
+
+    //NOTE run away
+    if (this.shouldRunAway()) {
+        let newLocationId = 0;
+        let canGo = [location.canGoEast(), location.canGoWest()];
+        let side;
+        if (canGo[0] && canGo[1]) {
+            let rand = Math.round(Math.random());
+            newLocationId = rand ? location.getWestLocationId() : location.getEastLocationId() ;
+            side = rand ? 'west' : 'east';
+        } else if (canGo[0]) {
+            newLocationId = location.getEastLocationId();
+            side = 'east';
+        } else if (canGo[1]) {
+            newLocationId = location.getWestLocationId();
+            side = 'west';
+        }
+
+        let newLocation = LocationsInstance.getLocation(newLocationId);
+        if (newLocation.canEnemyMoveToLocation()) {
+            this.setLocation(newLocationId);
+            location.removeEnemyFromLocation(this._id);
+            location.broadcastResponse(this._id, {
+                enemy_remove: {
+                    id: this.getId(),
+                    side: side
+                }
+            });
+
+            newLocation.addHeroToLocation(this._id);
+            newLocation.broadcastResponse(this._id, {
+                enemy_add: {
+                    enemy: this.getEnemyViewForOtherHero(),
+                    side: side === 'west' ? 'east' : 'west'
+                }
+            });
+
+            EnemyQueueInstance.removeFromQueue(this._id);
+            return false;
+        }
+    }
+
+    //NOTE try attack
+    if (this._canEnemyAttackAction()) {
         // console.log('cron action enemy ' + this.getId() + ' on location ' + this.getLocation());
         let EnemyQueueInstance = module.parent.parent.exports.EnemiesQueue;
         if (this._heroesAttackedOrder[0] === undefined) {
@@ -149,9 +202,6 @@ Enemy2.prototype.cronAction = function()
             EnemyQueueInstance.removeFromQueue(this._id);
 
         } else {
-            let LocationsInstance = module.parent.parent.exports.Locations;
-            let location = LocationsInstance.getLocation(this._location);
-
             let firstAttackerId = null;
             while (this._heroesAttackedOrder.length) {
                 firstAttackerId = this._heroesAttackedOrder[0];

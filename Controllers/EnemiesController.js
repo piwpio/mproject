@@ -14,11 +14,12 @@ var Enemies = function()
             enemy.base,
             enemy.name          || enemy.base,
             enemy.level         || enemiesBase[enemy.base].level,
+            enemy.coward        || enemiesBase[enemy.base].coward,
             enemy.hp            || enemiesBase[enemy.base].hp,
             enemy.attack        || enemiesBase[enemy.base].attack,
             enemy.defence       || enemiesBase[enemy.base].defence,
             enemy.attack_lag    || enemiesBase[enemy.base].attack_lag,
-            enemy.exp           || enemiesBase[enemy.base].exp
+            enemy.exp           || enemiesBase[enemy.base].exp,
         );
     }
 };

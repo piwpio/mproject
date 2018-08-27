@@ -1,7 +1,7 @@
 var Heroes = require("./Controllers/HeroesController");
 var Locations = require("./Controllers/LocationsController");
 var Enemies = require("./Controllers/EnemiesController");
-var Debug = require("./Controllers/DebugController");
+// var Debug = require("./Controllers/DebugController");
 var HeroRoute = require("./Controllers/HeroRouteController");
 var StaticData = require("./Controllers/StaticDataController");
 var EnemiesQueue = require("./Queues/EnemiesQueue");
@@ -19,7 +19,7 @@ let HeroesInstance = Heroes.create();
 let EnemiesInstance = Enemies.create();
 let LocationsInstance = Locations.create();
 let EnemiesQueueInstance = EnemiesQueue.create();
-let DebugInstance = Debug.create();
+// let DebugInstance = Debug.create();
 
 module.exports = {
     Heroes: HeroesInstance,
@@ -44,12 +44,9 @@ io.sockets.on('connection', function(socket) {
     heroNewId++;
     HeroesInstance.createHero(socket, heroNewId);
     HeroRoute.init(HeroesInstance.getHero(socket.getHeroId()));
-    DebugInstance.addHeroDebug(socket);
+    // DebugInstance.addHeroDebug(socket);
     console.log("HERO " + socket.getHeroId() + " CONNECTED");
-
-    socket.on('disconnect', function() {
-
-    });
+    socket.emit('connected');
 });
 console.log("SOCKETS LISTENING");
 
