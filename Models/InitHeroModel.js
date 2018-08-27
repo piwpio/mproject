@@ -12,7 +12,7 @@ var execute = function(hero)
         hero_add: [hero.getId(), 'login']
     });
 
-    hero.emitCustomResponse('new_location_response', location.getHeroNewLocationObject(hero.getId()));
+    hero.emitCustomResponse('new_location_response', location.getLocationForNewHeroObject(hero.getId()));
 };
 
 module.exports = {

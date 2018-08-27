@@ -27,7 +27,7 @@ var execute = function(hero)
             hero_add: [hero.getId(), 'west']
         });
 
-        hero.emitCustomResponse('new_location_response', newLocation.getHeroNewLocationObject(hero.getId()));
+        hero.emitCustomResponse('new_location_response', newLocation.getLocationForNewHeroObject(hero.getId()));
 
     } else {
         hero.emitError({message: 'cant go east'});

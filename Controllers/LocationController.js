@@ -6,11 +6,13 @@ var Location2 = function(id, moves, enemies)
     this._moves = moves;
 
     this._enemiesOnLocation = {};
+    this._enemyShowQueue = [];
     for (let enemyId of enemies) {
-        this._enemiesOnLocation[enemyId] = 1;
+        this.addEnemyToLocation(enemyId);
     }
 
     this._heroesOnLocation = {};
+    this._heroesShowQueue = [];
 };
 // Location2.prototype = Object.create(ResponseController.prototype);
 
@@ -33,11 +35,16 @@ Location2.prototype.initEnemies = function()
 
 Location2.prototype.addHeroToLocation = function(heroId)
 {
+    this._heroesShowQueue.push(heroId);
     this._heroesOnLocation[heroId] = 1;
 };
 
 Location2.prototype.removeHeroFromLocation = function(heroId)
 {
+    let index = this._heroesShowQueue.indexOf(heroId);
+    if (index > -1) {
+        this._heroesShowQueue.splice(index,1);
+    }
     delete this._heroesOnLocation[heroId];
 };
 
@@ -53,11 +60,16 @@ Location2.prototype.getHeroOnLocation = function(heroId)
 
 Location2.prototype.addEnemyToLocation = function(enemyId)
 {
+    this._enemyShowQueue.push(enemyId);
     this._enemiesOnLocation[enemyId] = 1;
 };
 
 Location2.prototype.removeEnemyFromLocation = function(enemyId)
 {
+    let index = this._enemyShowQueue.indexOf(enemyId);
+    if (index > -1) {
+        this._enemyShowQueue.splice(index,1);
+    }
     delete this._enemiesOnLocation[enemyId];
 };
 
@@ -71,10 +83,16 @@ Location2.prototype.getEnemyOnLocation = function(enemyId)
     }
 };
 
-Location2.prototype.getHeroNewLocationObject = function(senderId)
+Location2.prototype.getLocationForNewHeroObject = function(senderId)
 {
     let HeroesInstance = module.parent.parent.exports.Heroes;
     let heroes = [];
+    for (let i = 0; i < this._heroesShowQueue; i++) {
+        let heroId = this._heroesShowQueue[i];
+        if (senderId !== heroId) {
+            heroes.push(HeroesInstance.getEnemy(heroId).getHeroViewForOtherHero());
+        }
+    }
     for (let heroId in this._heroesOnLocation) {
         heroId = parseInt(heroId);
         if (senderId !== heroId) {
@@ -84,7 +102,8 @@ Location2.prototype.getHeroNewLocationObject = function(senderId)
 
     let EnemiesInstance = module.parent.parent.exports.Enemies;
     let enemies = [];
-    for (let enemyId in this._enemiesOnLocation) {
+    for (let i = 0; i < this._enemyShowQueue; i++) {
+        let enemyId = this._enemyShowQueue[i];
         enemies.push(EnemiesInstance.getEnemy(enemyId).getEnemyViewForOtherHero());
     }
     return {
@@ -120,11 +139,6 @@ Location2.prototype.broadcastEnemy = function(enemyId)
         this.broadcastResponseAll({enemy: r});
         enemy.cleanResponse();
     }
-};
-
-Location2.prototype.emitCustomResponse = function(emitKey, senderId, object)
-{
-
 };
 
 
