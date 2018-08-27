@@ -73,6 +73,7 @@ Enemy2.prototype.getDeathTime =     function(){ return this._deathTime };
 
 Enemy2.prototype.setLocation =  function(v) { this._location = v; return this; };
 Enemy2.prototype.setHp =        function(v) { this._setValue('_hp', v); return this;};
+Enemy2.prototype.setIsAlive =   function(v) { this._setValue('_alive', v); return this;};
 
 Enemy2.prototype.isAlive =          function() {return this._alive;};
 
@@ -105,7 +106,7 @@ Enemy2.prototype.takeAttack = function(hero)
         console.log('enemy dead');
         this._deathTime = Date.now();
         this._respTime = this._deathTime + (this._respSeconds * 1000);
-        this._alive = false;
+        this.setIsAlive(false)
     }
 };
 
@@ -135,6 +136,8 @@ Enemy2.prototype.shouldRunAway = function()
 Enemy2.prototype.cronAction = function()
 {
     let EnemyQueueInstance = module.parent.parent.exports.EnemiesQueue;
+    let LocationsInstance = module.parent.parent.exports.Locations;
+    let location = LocationsInstance.getLocation(this._location);
 
     //NOTE check respawn
     if (!this.isAlive()) {
@@ -144,13 +147,11 @@ Enemy2.prototype.cronAction = function()
             // console.log('enemy respawn');
             EnemyQueueInstance.removeFromQueue(this._id);
             this.respawnAction();
+            location.broadcastEnemy(this._id);
         }
 
         return;
     }
-
-    let LocationsInstance = module.parent.parent.exports.Locations;
-    let location = LocationsInstance.getLocation(this._location);
 
     //NOTE run away
     if (this.shouldRunAway()) {
@@ -179,8 +180,7 @@ Enemy2.prototype.cronAction = function()
                     side: side
                 }
             });
-
-            newLocation.addHeroToLocation(this._id);
+            newLocation.addEnemyToLocation(this._id);
             newLocation.broadcastResponse(this._id, {
                 enemy_add: {
                     enemy: this.getEnemyViewForOtherHero(),
@@ -248,7 +248,6 @@ Enemy2.prototype.respawnAction = function()
     this._respTime = null;
     this._heroesAttackDamage = {};
     this._heroesAttackedOrder = [];
-    this._hp = this.getBaseHp();
-
-    this._alive = true;
+    this.setHp(this._baseHp);
+    this.setIsAlive(true);
 };

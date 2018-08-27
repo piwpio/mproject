@@ -8,6 +8,7 @@ var Enemies = function()
     var enemiesRaw = EnemiesConstants.getAll();
     var enemiesBase = EnemiesBaseConstants.getAll();
     for (var enemyId in enemiesRaw) {
+        enemyId = parseInt(enemyId);
         var enemy = enemiesRaw[enemyId];
         this._enemies[enemyId] = Enemy.create(
             enemyId,

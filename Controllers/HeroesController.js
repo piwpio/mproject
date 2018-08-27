@@ -22,8 +22,8 @@ Heroes2.prototype.createHero = function(socket, heroId)
     //NOTE DISCONNECT
     var self = this;
     socket.on('disconnect', function() {
-        self.removeHero(socket.getHeroId());
         hero.heroOnDisconnect();
+        self.removeHero(socket.getHeroId());
         console.log("HERO " + socket.getHeroId() + " DISCONNECTED")
     });
 };

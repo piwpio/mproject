@@ -8,7 +8,7 @@ var Location2 = function(id, moves, enemies)
     this._moves = moves;
 
     this._enemiesOnLocation = {};
-    this._enemyShowQueue = [];
+    this._enemiesShowQueue = [];
     for (let enemyId of enemies) {
         this.addEnemyToLocation(enemyId);
     }
@@ -27,7 +27,7 @@ Location2.prototype.getWestLocationId = function()  { return this._moves.west; }
 Location2.prototype.isHeroOnLocation = function(heroId)     { return !!this._heroesOnLocation[heroId]; };
 Location2.prototype.isEnemyOnLocation = function(enemyId)   { return !!this._enemiesOnLocation[enemyId]; };
 
-Location2.prototype.canEnemyMoveToLocation = function() { return this._enemyShowQueue.length <= GlobalConstants.maxEnemiesOnLocation; };
+Location2.prototype.canEnemyMoveToLocation = function() { return this._enemiesShowQueue.length <= GlobalConstants.maxEnemiesOnLocation; };
 
 Location2.prototype.initEnemies = function()
 {
@@ -64,15 +64,15 @@ Location2.prototype.getHeroOnLocation = function(heroId)
 
 Location2.prototype.addEnemyToLocation = function(enemyId)
 {
-    this._enemyShowQueue.push(enemyId);
+    this._enemiesShowQueue.push(enemyId);
     this._enemiesOnLocation[enemyId] = 1;
 };
 
 Location2.prototype.removeEnemyFromLocation = function(enemyId)
 {
-    let index = this._enemyShowQueue.indexOf(enemyId);
+    let index = this._enemiesShowQueue.indexOf(enemyId);
     if (index > -1) {
-        this._enemyShowQueue.splice(index,1);
+        this._enemiesShowQueue.splice(index,1);
     }
     delete this._enemiesOnLocation[enemyId];
 };
@@ -100,8 +100,8 @@ Location2.prototype.getLocationForNewHeroObject = function(senderId)
 
     let EnemiesInstance = module.parent.parent.exports.Enemies;
     let enemies = [];
-    for (var j = 0; j < this._enemyShowQueue.length; j++) {
-        let enemyId = this._enemyShowQueue[j];
+    for (var j = 0; j < this._enemiesShowQueue.length; j++) {
+        let enemyId = this._enemiesShowQueue[j];
         enemies.push(EnemiesInstance.getEnemy(enemyId).getEnemyViewForOtherHero());
     }
     return {
