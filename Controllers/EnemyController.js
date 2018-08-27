@@ -174,14 +174,14 @@ Enemy2.prototype.cronAction = function()
         if (newLocation.canEnemyMoveToLocation()) {
             this.setLocation(newLocationId);
             location.removeEnemyFromLocation(this._id);
-            location.broadcastResponse(this._id, {
+            location.broadcastResponse(0, {
                 enemy_remove: {
                     id: this.getId(),
                     side: side
                 }
             });
             newLocation.addEnemyToLocation(this._id);
-            newLocation.broadcastResponse(this._id, {
+            newLocation.broadcastResponse(0, {
                 enemy_add: {
                     enemy: this.getEnemyViewForOtherHero(),
                     side: side === 'west' ? 'east' : 'west'
