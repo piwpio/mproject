@@ -6,7 +6,7 @@ var raw = {
         defence: 1,
         attack_lag: 4,
         exp: 10,
-        coward:100
+        coward:0
     }
 };
 

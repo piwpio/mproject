@@ -128,12 +128,15 @@ Location2.prototype.broadcastResponseAll = function(object)
     this.broadcastResponse(0, object);
 };
 
-Location2.prototype.broadcastEnemy = function(enemyId)
+Location2.prototype.broadcastEnemy = function(enemyId, customObject)
 {
     let enemy = this.getEnemyOnLocation(enemyId);
     if (enemy) {
-        var r = {};
+        let r = {};
         r[enemyId] = enemy.getResponse();
+        for (let key in customObject) {
+            r[enemyId][key] = customObject[key];
+        }
         this.broadcastResponseAll({enemy: r});
         enemy.cleanResponse();
     }

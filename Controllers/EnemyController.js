@@ -141,15 +141,12 @@ Enemy2.prototype.cronAction = function()
 
     //NOTE check respawn
     if (!this.isAlive()) {
-        // console.log('r ', Date.now(), this._respTime, Date.now() >= this._respTime);
-        // console.log('check if enemy can respawn');
         if (this.canRespawn()) {
-            // console.log('enemy respawn');
+            //NOTE enemy respawn
             EnemyQueueInstance.removeFromQueue(this._id);
             this.respawnAction();
             location.broadcastEnemy(this._id);
         }
-
         return;
     }
 
@@ -195,10 +192,9 @@ Enemy2.prototype.cronAction = function()
 
     //NOTE try attack
     if (this._canEnemyAttackAction()) {
-        // console.log('cron action enemy ' + this.getId() + ' on location ' + this.getLocation());
         let EnemyQueueInstance = module.parent.parent.exports.EnemiesQueue;
         if (this._heroesAttackedOrder[0] === undefined) {
-            // console.log('empty attackers order, remove from queue');
+            //NOTE empty attackers order, remove from queue
             EnemyQueueInstance.removeFromQueue(this._id);
 
         } else {
@@ -206,7 +202,6 @@ Enemy2.prototype.cronAction = function()
             while (this._heroesAttackedOrder.length) {
                 firstAttackerId = this._heroesAttackedOrder[0];
                 if (location.isHeroOnLocation(firstAttackerId)) {
-                    // console.log('found hero, now attack');
                     break;
                 } else {
                     this._removeFirstAttacker();
@@ -214,17 +209,18 @@ Enemy2.prototype.cronAction = function()
                 }
             }
             if (!firstAttackerId) {
-                // console.log('nie ma herosa który atakował na lokacji');
+                //NOTE hero is coward and run away from location attack
                 EnemyQueueInstance.removeFromQueue(this._id);
 
             } else {
+                //NOTE enemy attack
                 console.log('enemy ' + this.getId() + ' attack hero ' + firstAttackerId);
                 let attacker = location.getHeroOnLocation(firstAttackerId);
                 attacker.takeAttack(this);
                 attacker.sendResponse();
+                location.broadcastEnemy(this._id, {attack_hero: firstAttackerId});
                 this.setLastEnemyAttackAction();
             }
-
         }
     } else {
         console.log('cant enemy do attack action yet')
