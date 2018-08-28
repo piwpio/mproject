@@ -103,7 +103,6 @@ Enemy2.prototype.takeAttack = function(hero)
     }
 
     if (this._hp <= 0) {
-        console.log('enemy dead');
         this._deathTime = Date.now();
         this._respTime = this._deathTime + (this._respSeconds * 1000);
         this.setIsAlive(false)
@@ -214,7 +213,6 @@ Enemy2.prototype.cronAction = function()
 
             } else {
                 //NOTE enemy attack
-                console.log('enemy ' + this.getId() + ' attack hero ' + firstAttackerId);
                 let attacker = location.getHeroOnLocation(firstAttackerId);
                 attacker.takeAttack(this);
                 attacker.sendResponse();
@@ -223,7 +221,7 @@ Enemy2.prototype.cronAction = function()
             }
         }
     } else {
-        console.log('cant enemy do attack action yet')
+        // console.log('cant enemy do attack action yet')
     }
 
 };
