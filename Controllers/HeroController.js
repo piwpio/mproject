@@ -78,6 +78,7 @@ Hero2.prototype.isAlive = function() { return this._alive; };
 Hero2.prototype.addInitToResponse = function()
 {
     let fields = [
+        '_id',
         '_location',
         '_name',
         '_level',
@@ -184,9 +185,10 @@ Hero2.prototype.isAlive = function()
 Hero2.prototype.takeAttack = function(enemy)
 {
     let enemyAttack = enemy.getAttack();
+    let damageDealt = 0;
     if (enemyAttack > this._defence) {
         let damage = enemyAttack - this._defence;
-        let damageDealt = this._hp - damage > 0 ? damage : this._hp;
+        damageDealt = this._hp - damage > 0 ? damage : this._hp;
         this.setHp(this._hp - damageDealt);
     } else if (enemyAttack === this._defence) {
         //luck,
@@ -195,6 +197,10 @@ Hero2.prototype.takeAttack = function(enemy)
     //dead
     if (this._hp <= 0) {
         this._heroIsDeadAction();
+    }
+
+    return {
+        damage: damageDealt
     }
 };
 

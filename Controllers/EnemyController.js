@@ -84,17 +84,18 @@ Enemy2.prototype.canRespawn = function()
 
 Enemy2.prototype.takeAttack = function(hero)
 {
-    var heroId = hero.getId();
-    var heroAttack = hero.getAttack();
+    let heroId = hero.getId();
+    let heroAttack = hero.getAttack();
     this._addAttacker(hero.getId());
     //hero attack counter
     if (this._heroesAttackDamage[heroId] === undefined) {
         this._heroesAttackDamage[heroId] = 0;
     }
 
+    let damageDealt = 0;
     if (heroAttack > this._defence) {
-        var damage = heroAttack - this._defence;
-        var damageDealt = this._hp - damage > 0 ? damage : this._hp;
+        let damage = heroAttack - this._defence;
+        damageDealt = this._hp - damage > 0 ? damage : this._hp;
         this.setHp(this._hp - damage);
         this._heroesAttackDamage[heroId] += damageDealt;
 
@@ -106,6 +107,10 @@ Enemy2.prototype.takeAttack = function(hero)
         this._deathTime = Date.now();
         this._respTime = this._deathTime + (this._respSeconds * 1000);
         this.setIsAlive(false)
+    }
+
+    return {
+        damage: damageDealt
     }
 };
 

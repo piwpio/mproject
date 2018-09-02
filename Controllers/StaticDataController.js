@@ -5,6 +5,7 @@ var StaticDataController = function()
 {
     this.static = {};
     this.controlCode = Date.now();
+    this.static.dead_location_id = LocationConstants.getDeadId();
     this.static.locations = {};
     let locationsRaw = LocationConstants.getAll();
     for (var locId in locationsRaw) {
